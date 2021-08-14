@@ -2,6 +2,12 @@
 
 SiteMon is a tool that allows users to monitor specific webpages for minor/major changes based on a set of rules.
 
+<center>
+
+![Github Issues](https://img.shields.io/github/issues/michaellrowley/SiteMon) ![Github Forks](https://img.shields.io/github/forks/michaellrowley/SiteMon) ![Github Stars](https://img.shields.io/github/stars/michaellrowley/SiteMon) ![Repository License](https://img.shields.io/github/license/michaellrowley/SiteMon)
+
+</center>
+
 ## Usage:
 <center>
 <img style="height: 250px;border:dotted #cccccc 2px;" src="https://i.ibb.co/fG9XvXC/SITEMON-CONFIGURATION.png"/>
