@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Text.RegularExpressions;
 using System.Threading;
-using System.IO;
+using System.Security.Cryptography;
 using System.Windows.Forms;
 
 namespace SiteMon {
@@ -73,8 +73,40 @@ namespace SiteMon {
             private void Monitor() {
                 while (!StopMonitoring) {
                     string PageSource = GetPageSource();
-                    if (this.LastPageSource != PageSource) {
+                    if (this.LastPageSource != null && 
+                        PageSource != null &&
+                        this.LastPageSource != PageSource) {
+
+                        Configuration.Logs += $"{DateTime.Now.ToString()}: A change was detected in '{this.Name}' ('{this.Url}').\n";
+
                         SpawnNotification();
+
+                        if (Configuration.ChangeLogs) {
+                            // SHA1 is used because I can't
+                            // find a native CRC (or similar)
+                            // checksum/hashing algorithm for
+                            // C# .NET, not for anything security
+                            // related.
+                            // If the tech-debt becomes too large (performance gets too slow) I'll write (or more realistically, copy) a CRC32 or basic checksum implementation and use that.
+                            SHA1 SHAInstance = SHA1.Create();
+                            byte[] LastBytes = System.Text.Encoding.UTF8.GetBytes(this.LastPageSource);
+                            string LastPageHash = BitConverter.ToString(SHAInstance.ComputeHash(LastBytes)).Replace("-", string.Empty);
+                            byte[] NewBytes = System.Text.Encoding.UTF8.GetBytes(PageSource);
+                            string NewPageHash = BitConverter.ToString(SHAInstance.ComputeHash(NewBytes)).Replace("-", string.Empty);
+                            //if (System.IO.File.Exists()) // Don't bother with this check, just overwrite the file if it already exists.
+                            SHAInstance.Dispose(); // Easier than a 'using' tag in this case.
+                            SHAInstance = null; // Prevent future accidental use.
+                            string CurrentDateTimeFormatted = DateTime.Now.ToString().Replace(" ",
+                                "_").Replace(':', '-').Replace('/', '-');
+                            System.IO.File.WriteAllText(Configuration.ChangeLogsLocation +
+                                $"\\{LastPageHash}-{CurrentDateTimeFormatted}",
+                                this.LastPageSource);
+
+                            System.IO.File.WriteAllText(Configuration.ChangeLogsLocation +
+                                $"/{NewPageHash}-{CurrentDateTimeFormatted}",
+                                PageSource);
+                        }
+
                     }
                     this.LastPageSource = PageSource;
 
@@ -94,22 +126,22 @@ namespace SiteMon {
             }
             private string GenUA() {
                 // sitemon / 0.1 / delay:4000ms / start:13/08/2021
-                string UserAgent = $"sitemon / {Configuration.Version} / delay:" +
-                    $"{Configuration.Delay} / start:" +
-                    $"{Configuration.StartedAt.ToString().Replace(' ', '-')}";
+                string UserAgent = $"sitemon / {Configuration.Version} / delay: " +
+                    $"{Configuration.Delay} / started: " +
+                    $"{Configuration.StartedAt.ToString().Replace(' ', '-')}" +
+                    " / source: https://github.com/michaellrowley/sitemon";
                 return UserAgent;
             }
             public MonitorTarget(string Name, string Url) {
-
                 this.Name = Name;
                 this.Url = Url;
                 this.MonitoringThread = null;
                 this.StopMonitoring = false;
                 this.WebInteraction = new WebClient();
                 this.LastPageSource = null;
-                this.LastPageSource = this.GetPageSource();
                 this.MonitoringThread = new Thread(this.Monitor);
                 Configuration.StartedAt = DateTime.Now;
+                this.LastPageSource = this.GetPageSource();
             }
         };
         private List<MonitorTarget> MonitorTargets = new List<MonitorTarget>(0);

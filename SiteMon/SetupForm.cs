@@ -19,6 +19,9 @@ namespace SiteMon
             Configuration.ShowMessageBox = this.MessageBoxCheckBox.Checked;
             Configuration.OpenUrl = this.OpenUrlCheckBox.Checked;
             Configuration.PlaySound = this.PlaySoundCheckBox.Checked;
+            Configuration.ChangeLogs = this.ChangeLoggingCheckBox.Checked;
+            Configuration.ChangeLogsLocation = this.ChangeLogLocationDialog.SelectedPath;
+            Configuration.Logs = this.LogsTextBox.Text;
             Configuration.Targets.Clear();
             for (int i = 0; i < MonitorListGridView.Rows.Count; i++) {
                 if (MonitorListGridView.Rows[i].Cells.Count != 2 ||
@@ -33,7 +36,8 @@ namespace SiteMon
         }
         private void UpdateForm() {
             this.UserAgentTextBox.Text = Configuration.UserAgent;
-            this.DelayUpDown.Value = Configuration.Delay;
+            this.DelayUpDown.Value = (this.DelayUpDown.Value > Configuration.Delay)
+                ? this.DelayUpDown.Value : Configuration.Delay;
                 RegexWhitelistGridView.Rows.Clear();
             foreach (string RegexInstance in Configuration.Regexes) {
                 RegexWhitelistGridView.Rows.Add(new string[] { RegexInstance });
@@ -45,6 +49,9 @@ namespace SiteMon
             this.MessageBoxCheckBox.Checked = Configuration.ShowMessageBox;
             this.OpenUrlCheckBox.Checked = Configuration.OpenUrl;
             this.PlaySoundCheckBox.Checked = Configuration.PlaySound;
+            this.ChangeLoggingCheckBox.Checked = Configuration.ChangeLogs;
+            this.ChangeLogLocationDialog.SelectedPath = Configuration.ChangeLogsLocation;
+            this.LogsTextBox.Text = Configuration.Logs;
         }
         private void MonitorListTab_Click(object sender, EventArgs e) {
             ((TabControl)sender).SelectedTab.Focus();
@@ -60,6 +67,7 @@ namespace SiteMon
         private void LaunchButton_Click(object sender, EventArgs e) {
             if (Monitoring != null) {
                 MessageBox.Show("Unable to start monitoring selected sites.", "Already monitoring.");
+                return;
             }
             UpdateConfig();
             Monitoring = new MonitorInstance();
@@ -133,11 +141,46 @@ namespace SiteMon
             System.IO.File.WriteAllText(ExportConfigDialog.FileName, SerializedConfig);
             MessageBox.Show("Exported!");
         }
+
+        private void ChangeLoggingCheckBox_CheckedChanged(object sender, EventArgs e) {
+            if (this.ChangeLoggingCheckBox.Checked) {
+                if (this.ChangeLogLocationDialog.ShowDialog() != DialogResult.OK) {
+                    MessageBox.Show("Invalid location.");
+                    this.ChangeLoggingCheckBox.Checked = false;
+                    return;
+                }
+                ChangeLogLocationTextBox.Text = ChangeLogLocationDialog.SelectedPath;
+            }
+        }
+
+        private void ChangeLogLocationTextBox_Click(object sender, EventArgs e) {
+            if (!this.ChangeLoggingCheckBox.Checked) {
+                this.ChangeLoggingCheckBox.Checked = true;
+            }
+            else {
+                ChangeLoggingCheckBox_CheckedChanged(null, null);
+            }
+            this.label2.Focus();
+        }
+
+        private void LogUpdater_Tick(object sender, EventArgs e) {
+            // The Configuration.Log value is often updated outside
+            // of the SetupForm UI thread meaning that a direct call
+            // to update the relevant text box isn't always possible,
+            // as a result of this - we have this timer that periodically
+            // calls it in place of other threads trying to interact
+            // with the UI one (which never ends well because this is a WinForm).
+            this.LogsTextBox.Text = Configuration.Logs;
+        }
+
+        private void LogsTextBox_TextChanged(object sender, EventArgs e) {
+            Configuration.Logs = this.LogsTextBox.Text;
+        }
     }
 }
 public static class Configuration {
-    public static string Version = "v0.2";
-    public static string[] Regexes;
+    public static string Version = "v0.7.2";
+    public static string[] Regexes = new string[0];
     public static List<KeyValuePair<string, string>> Targets = new List<KeyValuePair<string, string>>(0); // { <NAME, URL> }
     public static string UserAgent;
     public static DateTime StartedAt;
@@ -146,6 +189,9 @@ public static class Configuration {
     public static bool ShowMessageBox;
     public static bool OpenUrl;
     public static bool PlaySound;
+    public static bool ChangeLogs;
+    public static string ChangeLogsLocation;
+    public static string Logs;
     private static string GenerateHeader() {
         string Header = string.Empty;
         Header += "// Project: HTTPS://GITHUB.COM/MICHAELLROWLEY/SITEMON\n";
@@ -184,6 +230,14 @@ public static class Configuration {
         SerializedData += "// Configuration.PlaySound:\n";
         SerializedData += (Configuration.PlaySound ? "true" : "false") + "\n";
 
+        // this.ChangeLogs
+        SerializedData += "// Configuration.ChangeLogs:\n";
+        SerializedData += (Configuration.ChangeLogs ? "true" : "false") + "\n";
+
+        // this.ChangeLogsLocation
+        SerializedData += "// Configuration.ChangeLogsLocation:\n";
+        SerializedData += Configuration.ChangeLogsLocation + "\n";
+
         // this.Regexes
         SerializedData += "// Configuration.Regexes:";
         foreach (string RegexInstance in Configuration.Regexes) {
@@ -196,6 +250,12 @@ public static class Configuration {
             SerializedData += "\n\t" + IterativeTarget.Key + "\x00" + IterativeTarget.Value;
         }
 
+        // this.Logs
+        SerializedData += "\n\n// Configuration.Logs:";
+        foreach (string LogLine in Configuration.Logs.Split('\n')) {
+            SerializedData += "\n\t" + LogLine;
+        }
+
         return SerializedData;
     }
     public static bool LoadFromConfig(string SerializedData) {
@@ -204,7 +264,8 @@ public static class Configuration {
         foreach (string DataLine in SerializedData.Split('\n')) {
             if (DataLine.TrimStart().StartsWith("//") ||
                 DataLine.Trim(new char[] { ' ', '\t' }) == string.Empty) {
-                if (ParsingStage == 7 && DataLine == string.Empty) {
+                if ((ParsingStage == 9 || ParsingStage == 8 || ParsingStage == 10)
+                    && DataLine == string.Empty) {
                     ParsingStage++;
                 }
                 continue;
@@ -249,6 +310,18 @@ public static class Configuration {
                     }
                     break;
                 case 7: {
+                        // this.ChangeLogs
+                        Configuration.ChangeLogs = DataLine == "true" ? true : false;
+                        ParsingStage++;
+                    }
+                    break;
+                case 8: {
+                        // this.ChangeLogsLocation
+                        Configuration.ChangeLogsLocation = DataLine;
+                        ParsingStage++;
+                    }
+                    break;
+                case 9: {
                         // this.Regexes
                         if (!DataLine.StartsWith("\t")) {
                             return false;
@@ -256,7 +329,7 @@ public static class Configuration {
                         RegexList.Add(DataLine.TrimStart(new char[] { '\t' }));
                     }
                     break;
-                case 8: {
+                case 10: {
                         // this.Targets
                         string[] DataSegments = DataLine.TrimStart(new char[] { '\t' }).Split('\x00');
                         if (DataSegments.Length != 2) {
@@ -268,12 +341,16 @@ public static class Configuration {
                         ));
                     }
                     break;
+                case 11: {
+                        Configuration.Logs += "\n" + DataLine.TrimStart(new char[] { '\t' });
+                    }
+                    break;
                 default:
                     return false;
                     break; // Should never be hit.
             }
         }
             Configuration.Regexes = RegexList.ToArray();
-        return ParsingStage == 8;
+        return ParsingStage == 11;
     }
 }

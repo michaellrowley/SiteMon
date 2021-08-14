@@ -29,6 +29,7 @@ namespace SiteMon
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.MonitorListGridView = new System.Windows.Forms.DataGridView();
             this.NameColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
             this.URLColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
@@ -41,6 +42,8 @@ namespace SiteMon
             this.OpenUrlCheckBox = new System.Windows.Forms.CheckBox();
             this.PopupWindowCheckBox = new System.Windows.Forms.CheckBox();
             this.groupBox2 = new System.Windows.Forms.GroupBox();
+            this.ChangeLogLocationTextBox = new System.Windows.Forms.TextBox();
+            this.ChangeLoggingCheckBox = new System.Windows.Forms.CheckBox();
             this.ExportButton = new System.Windows.Forms.Button();
             this.ImportButton = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
@@ -51,11 +54,15 @@ namespace SiteMon
             this.WhitelistGroupBox = new System.Windows.Forms.GroupBox();
             this.RegexWhitelistGridView = new System.Windows.Forms.DataGridView();
             this.RegexColumn = new System.Windows.Forms.DataGridViewTextBoxColumn();
+            this.LoggingPage = new System.Windows.Forms.TabPage();
+            this.LogsTextBox = new System.Windows.Forms.RichTextBox();
             this.LaunchButton = new System.Windows.Forms.Button();
             this.HideButton = new System.Windows.Forms.Button();
             this.StopButton = new System.Windows.Forms.Button();
             this.ExportConfigDialog = new System.Windows.Forms.SaveFileDialog();
             this.ImportConfigDialog = new System.Windows.Forms.OpenFileDialog();
+            this.ChangeLogLocationDialog = new System.Windows.Forms.FolderBrowserDialog();
+            this.LogUpdater = new System.Windows.Forms.Timer(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.MonitorListGridView)).BeginInit();
             this.MonitorListTab.SuspendLayout();
             this.MonitorListTabPage.SuspendLayout();
@@ -66,6 +73,7 @@ namespace SiteMon
             ((System.ComponentModel.ISupportInitialize)(this.DelayUpDown)).BeginInit();
             this.WhitelistGroupBox.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.RegexWhitelistGridView)).BeginInit();
+            this.LoggingPage.SuspendLayout();
             this.SuspendLayout();
             // 
             // MonitorListGridView
@@ -106,10 +114,11 @@ namespace SiteMon
             this.MonitorListTab.Anchor = System.Windows.Forms.AnchorStyles.None;
             this.MonitorListTab.Controls.Add(this.MonitorListTabPage);
             this.MonitorListTab.Controls.Add(this.GeneralConfigTabPage);
+            this.MonitorListTab.Controls.Add(this.LoggingPage);
             this.MonitorListTab.Location = new System.Drawing.Point(12, 41);
             this.MonitorListTab.Name = "MonitorListTab";
             this.MonitorListTab.SelectedIndex = 0;
-            this.MonitorListTab.Size = new System.Drawing.Size(458, 253);
+            this.MonitorListTab.Size = new System.Drawing.Size(458, 260);
             this.MonitorListTab.TabIndex = 1;
             this.MonitorListTab.Tag = "";
             this.MonitorListTab.Click += new System.EventHandler(this.MonitorListTab_Click);
@@ -120,7 +129,7 @@ namespace SiteMon
             this.MonitorListTabPage.Location = new System.Drawing.Point(4, 22);
             this.MonitorListTabPage.Name = "MonitorListTabPage";
             this.MonitorListTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.MonitorListTabPage.Size = new System.Drawing.Size(450, 227);
+            this.MonitorListTabPage.Size = new System.Drawing.Size(450, 234);
             this.MonitorListTabPage.TabIndex = 0;
             this.MonitorListTabPage.Text = "Monitor list";
             this.MonitorListTabPage.UseVisualStyleBackColor = true;
@@ -134,7 +143,7 @@ namespace SiteMon
             this.GeneralConfigTabPage.Location = new System.Drawing.Point(4, 22);
             this.GeneralConfigTabPage.Name = "GeneralConfigTabPage";
             this.GeneralConfigTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.GeneralConfigTabPage.Size = new System.Drawing.Size(450, 227);
+            this.GeneralConfigTabPage.Size = new System.Drawing.Size(450, 234);
             this.GeneralConfigTabPage.TabIndex = 1;
             this.GeneralConfigTabPage.Text = "Configuration";
             this.GeneralConfigTabPage.UseVisualStyleBackColor = true;
@@ -150,7 +159,7 @@ namespace SiteMon
             this.groupBox3.Controls.Add(this.PopupWindowCheckBox);
             this.groupBox3.Location = new System.Drawing.Point(6, 3);
             this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(432, 53);
+            this.groupBox3.Size = new System.Drawing.Size(432, 60);
             this.groupBox3.TabIndex = 8;
             this.groupBox3.TabStop = false;
             this.groupBox3.Text = "Notification";
@@ -211,38 +220,58 @@ namespace SiteMon
             // 
             this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox2.Controls.Add(this.ChangeLogLocationTextBox);
+            this.groupBox2.Controls.Add(this.ChangeLoggingCheckBox);
             this.groupBox2.Controls.Add(this.ExportButton);
             this.groupBox2.Controls.Add(this.ImportButton);
-            this.groupBox2.Location = new System.Drawing.Point(6, 57);
+            this.groupBox2.Location = new System.Drawing.Point(6, 63);
             this.groupBox2.Name = "groupBox2";
             this.groupBox2.Size = new System.Drawing.Size(205, 86);
             this.groupBox2.TabIndex = 7;
             this.groupBox2.TabStop = false;
             this.groupBox2.Text = "IO";
             // 
+            // ChangeLogLocationTextBox
+            // 
+            this.ChangeLogLocationTextBox.Location = new System.Drawing.Point(95, 54);
+            this.ChangeLogLocationTextBox.Name = "ChangeLogLocationTextBox";
+            this.ChangeLogLocationTextBox.ReadOnly = true;
+            this.ChangeLogLocationTextBox.Size = new System.Drawing.Size(100, 20);
+            this.ChangeLogLocationTextBox.TabIndex = 3;
+            this.ChangeLogLocationTextBox.Click += new System.EventHandler(this.ChangeLogLocationTextBox_Click);
+            // 
+            // ChangeLoggingCheckBox
+            // 
+            this.ChangeLoggingCheckBox.AutoSize = true;
+            this.ChangeLoggingCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopRight;
+            this.ChangeLoggingCheckBox.Location = new System.Drawing.Point(95, 27);
+            this.ChangeLoggingCheckBox.Name = "ChangeLoggingCheckBox";
+            this.ChangeLoggingCheckBox.Size = new System.Drawing.Size(100, 17);
+            this.ChangeLoggingCheckBox.TabIndex = 2;
+            this.ChangeLoggingCheckBox.Text = "Change-logging";
+            this.ChangeLoggingCheckBox.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.ChangeLoggingCheckBox.UseVisualStyleBackColor = true;
+            this.ChangeLoggingCheckBox.CheckedChanged += new System.EventHandler(this.ChangeLoggingCheckBox_CheckedChanged);
+            // 
             // ExportButton
             // 
-            this.ExportButton.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.ExportButton.Location = new System.Drawing.Point(6, 21);
+            this.ExportButton.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.ExportButton.Location = new System.Drawing.Point(9, 23);
             this.ExportButton.Name = "ExportButton";
-            this.ExportButton.Size = new System.Drawing.Size(193, 23);
+            this.ExportButton.Size = new System.Drawing.Size(71, 23);
             this.ExportButton.TabIndex = 1;
-            this.ExportButton.Text = "Export configuration to file";
+            this.ExportButton.Text = "Export";
             this.ExportButton.UseVisualStyleBackColor = true;
             this.ExportButton.Click += new System.EventHandler(this.ExportButton_Click);
             // 
             // ImportButton
             // 
-            this.ImportButton.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.ImportButton.Location = new System.Drawing.Point(6, 50);
+            this.ImportButton.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.ImportButton.Location = new System.Drawing.Point(9, 52);
             this.ImportButton.Name = "ImportButton";
-            this.ImportButton.Size = new System.Drawing.Size(193, 23);
+            this.ImportButton.Size = new System.Drawing.Size(71, 23);
             this.ImportButton.TabIndex = 0;
-            this.ImportButton.Text = "Import configuration from file";
+            this.ImportButton.Text = "Import";
             this.ImportButton.UseVisualStyleBackColor = true;
             this.ImportButton.Click += new System.EventHandler(this.ImportButton_Click);
             // 
@@ -257,7 +286,7 @@ namespace SiteMon
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Location = new System.Drawing.Point(6, 149);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(205, 72);
+            this.groupBox1.Size = new System.Drawing.Size(205, 85);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Internet-Courtesy";
@@ -328,9 +357,9 @@ namespace SiteMon
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.WhitelistGroupBox.Controls.Add(this.RegexWhitelistGridView);
-            this.WhitelistGroupBox.Location = new System.Drawing.Point(217, 57);
+            this.WhitelistGroupBox.Location = new System.Drawing.Point(217, 69);
             this.WhitelistGroupBox.Name = "WhitelistGroupBox";
-            this.WhitelistGroupBox.Size = new System.Drawing.Size(227, 164);
+            this.WhitelistGroupBox.Size = new System.Drawing.Size(227, 165);
             this.WhitelistGroupBox.TabIndex = 2;
             this.WhitelistGroupBox.TabStop = false;
             this.WhitelistGroupBox.Text = "Whitelist";
@@ -346,10 +375,10 @@ namespace SiteMon
             this.RegexWhitelistGridView.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.RegexWhitelistGridView.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.RegexColumn});
-            this.RegexWhitelistGridView.Location = new System.Drawing.Point(6, 16);
+            this.RegexWhitelistGridView.Location = new System.Drawing.Point(6, 19);
             this.RegexWhitelistGridView.Name = "RegexWhitelistGridView";
             this.RegexWhitelistGridView.RowHeadersWidth = 47;
-            this.RegexWhitelistGridView.Size = new System.Drawing.Size(215, 142);
+            this.RegexWhitelistGridView.Size = new System.Drawing.Size(215, 140);
             this.RegexWhitelistGridView.TabIndex = 0;
             // 
             // RegexColumn
@@ -359,6 +388,26 @@ namespace SiteMon
             this.RegexColumn.Name = "RegexColumn";
             this.RegexColumn.Resizable = System.Windows.Forms.DataGridViewTriState.False;
             this.RegexColumn.Width = 166;
+            // 
+            // LoggingPage
+            // 
+            this.LoggingPage.Controls.Add(this.LogsTextBox);
+            this.LoggingPage.Location = new System.Drawing.Point(4, 22);
+            this.LoggingPage.Name = "LoggingPage";
+            this.LoggingPage.Size = new System.Drawing.Size(450, 234);
+            this.LoggingPage.TabIndex = 2;
+            this.LoggingPage.Text = "Logs";
+            this.LoggingPage.UseVisualStyleBackColor = true;
+            // 
+            // LogsTextBox
+            // 
+            this.LogsTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.LogsTextBox.Location = new System.Drawing.Point(3, 3);
+            this.LogsTextBox.Name = "LogsTextBox";
+            this.LogsTextBox.Size = new System.Drawing.Size(444, 221);
+            this.LogsTextBox.TabIndex = 0;
+            this.LogsTextBox.Text = "";
+            this.LogsTextBox.TextChanged += new System.EventHandler(this.LogsTextBox_TextChanged);
             // 
             // LaunchButton
             // 
@@ -401,6 +450,12 @@ namespace SiteMon
             // 
             this.ImportConfigDialog.FileName = "config.sm";
             // 
+            // LogUpdater
+            // 
+            this.LogUpdater.Enabled = true;
+            this.LogUpdater.Interval = 1500;
+            this.LogUpdater.Tick += new System.EventHandler(this.LogUpdater_Tick);
+            // 
             // SetupForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -422,11 +477,13 @@ namespace SiteMon
             this.groupBox3.ResumeLayout(false);
             this.groupBox3.PerformLayout();
             this.groupBox2.ResumeLayout(false);
+            this.groupBox2.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DelayUpDown)).EndInit();
             this.WhitelistGroupBox.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.RegexWhitelistGridView)).EndInit();
+            this.LoggingPage.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -460,5 +517,11 @@ namespace SiteMon
         private System.Windows.Forms.CheckBox OpenUrlCheckBox;
         private System.Windows.Forms.CheckBox PlaySoundCheckBox;
         private System.Windows.Forms.CheckBox MessageBoxCheckBox;
+        private System.Windows.Forms.CheckBox ChangeLoggingCheckBox;
+        private System.Windows.Forms.FolderBrowserDialog ChangeLogLocationDialog;
+        private System.Windows.Forms.TextBox ChangeLogLocationTextBox;
+        private System.Windows.Forms.TabPage LoggingPage;
+        private System.Windows.Forms.RichTextBox LogsTextBox;
+        private System.Windows.Forms.Timer LogUpdater;
     }
 }
