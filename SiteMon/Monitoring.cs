@@ -125,6 +125,8 @@ namespace SiteMon {
                 this.MonitoringThread.Abort();
             }
             private string GenUA() {
+                // TODO: Have this user-agent conform to standard formatting
+                //       (https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent)
                 // sitemon / 0.1 / delay:4000ms / start:13/08/2021
                 string UserAgent = $"sitemon / {Configuration.Version} / delay: " +
                     $"{Configuration.Delay} / started: " +

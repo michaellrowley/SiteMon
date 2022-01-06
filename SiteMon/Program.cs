@@ -8,9 +8,6 @@ namespace SiteMon {
         [STAThread]
         static void Main() {
             string[] ArgArray = Environment.GetCommandLineArgs();
-            //for (int i = 0; i < ArgArray.Length; i++) {
-            //    Console.WriteLine(ArgArray[i]);
-            //}
             if (ArgArray.Length == 2) {
                 string ConfigLocation = ArgArray[1];
                 string ConfigData = System.IO.File.ReadAllText(ConfigLocation);
