@@ -129,10 +129,7 @@ namespace SiteMon {
                 // TODO: Have this user-agent conform to standard formatting
                 //       (https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent)
                 // sitemon / 0.1 / delay:4000ms / start:13/08/2021
-                string UserAgent = $"sitemon / {Configuration.Version} / delay: " +
-                    $"{Configuration.Delay} / started: " +
-                    $"{Configuration.StartedAt.ToString().Replace(' ', '-')}" +
-                    " / source: https://github.com/michaellrowley/sitemon";
+                string UserAgent = $"sitemon-bot/{Configuration.Version} (+https://github.com/michaellrowley/sitemon)";
                 return UserAgent;
             }
             public MonitorTarget(string Name, string Url) {
