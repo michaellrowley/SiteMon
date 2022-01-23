@@ -63,6 +63,7 @@ namespace SiteMon
             this.ImportConfigDialog = new System.Windows.Forms.OpenFileDialog();
             this.ChangeLogLocationDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.LogUpdater = new System.Windows.Forms.Timer(this.components);
+            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.MonitorListGridView)).BeginInit();
             this.MonitorListTab.SuspendLayout();
             this.MonitorListTabPage.SuspendLayout();
@@ -332,21 +333,21 @@ namespace SiteMon
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Font = new System.Drawing.Font("Museo Sans 100", 7.854545F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(32, 48);
+            this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.854545F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label3.Location = new System.Drawing.Point(9, 48);
             this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(42, 14);
+            this.label3.Size = new System.Drawing.Size(59, 13);
             this.label3.TabIndex = 5;
-            this.label3.Text = "Delay:";
+            this.label3.Text = "Delay (ms):";
             this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label2
             // 
             this.label2.AutoSize = true;
-            this.label2.Font = new System.Drawing.Font("Museo Sans 100", 7.854545F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label2.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.854545F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.label2.Location = new System.Drawing.Point(6, 22);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(71, 14);
+            this.label2.Size = new System.Drawing.Size(62, 13);
             this.label2.TabIndex = 4;
             this.label2.Text = "User-agent:";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -456,6 +457,12 @@ namespace SiteMon
             this.LogUpdater.Interval = 1500;
             this.LogUpdater.Tick += new System.EventHandler(this.LogUpdater_Tick);
             // 
+            // toolTip1
+            // 
+            this.toolTip1.Tag = "test";
+            this.toolTip1.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
+            this.toolTip1.ToolTipTitle = "test";
+            // 
             // SetupForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -523,5 +530,6 @@ namespace SiteMon
         private System.Windows.Forms.TabPage LoggingPage;
         private System.Windows.Forms.RichTextBox LogsTextBox;
         private System.Windows.Forms.Timer LogUpdater;
+        private System.Windows.Forms.ToolTip toolTip1;
     }
 }
