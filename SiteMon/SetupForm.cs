@@ -179,7 +179,7 @@ namespace SiteMon
     }
 }
 public static class Configuration {
-    public static string Version = "v0.7.2";
+    public static string Version = "v0.7.4";
     public static string[] Regexes = new string[0];
     public static List<KeyValuePair<string, string>> Targets = new List<KeyValuePair<string, string>>(0); // { <NAME, URL> }
     public static string UserAgent;

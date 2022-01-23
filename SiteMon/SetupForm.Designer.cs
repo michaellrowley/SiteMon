@@ -63,7 +63,6 @@ namespace SiteMon
             this.ImportConfigDialog = new System.Windows.Forms.OpenFileDialog();
             this.ChangeLogLocationDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.LogUpdater = new System.Windows.Forms.Timer(this.components);
-            this.toolTip1 = new System.Windows.Forms.ToolTip(this.components);
             ((System.ComponentModel.ISupportInitialize)(this.MonitorListGridView)).BeginInit();
             this.MonitorListTab.SuspendLayout();
             this.MonitorListTabPage.SuspendLayout();
@@ -290,7 +289,7 @@ namespace SiteMon
             this.groupBox1.Size = new System.Drawing.Size(205, 85);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "Internet-Courtesy";
+            this.groupBox1.Text = "Networking";
             // 
             // UserAgentTextBox
             // 
@@ -457,12 +456,6 @@ namespace SiteMon
             this.LogUpdater.Interval = 1500;
             this.LogUpdater.Tick += new System.EventHandler(this.LogUpdater_Tick);
             // 
-            // toolTip1
-            // 
-            this.toolTip1.Tag = "test";
-            this.toolTip1.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this.toolTip1.ToolTipTitle = "test";
-            // 
             // SetupForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -530,6 +523,5 @@ namespace SiteMon
         private System.Windows.Forms.TabPage LoggingPage;
         private System.Windows.Forms.RichTextBox LogsTextBox;
         private System.Windows.Forms.Timer LogUpdater;
-        private System.Windows.Forms.ToolTip toolTip1;
     }
 }
