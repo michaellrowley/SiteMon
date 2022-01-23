@@ -31,7 +31,8 @@ namespace SiteMon {
                 for (int i = 0; i < RawSourceLines.Length; i++) {
                     bool ShouldAddLine = true;
                     for (int j = 0; j < Configuration.Regexes.Length; j++) {
-                        if (Regex.IsMatch(RawSourceLines[i], Configuration.Regexes[j])) {
+                        if (Configuration.Regexes[i] != null &&
+                            Regex.IsMatch(RawSourceLines[i], Configuration.Regexes[j])) {
                             ShouldAddLine = false; // Ignore this line
                             break;
                         }
