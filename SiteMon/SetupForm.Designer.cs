@@ -204,7 +204,6 @@ namespace SiteMon
             this.OpenUrlCheckBox.TabIndex = 1;
             this.OpenUrlCheckBox.Text = "Open URL";
             this.OpenUrlCheckBox.UseVisualStyleBackColor = true;
-            this.OpenUrlCheckBox.CheckedChanged += new System.EventHandler(this.OpenUrlCheckBox_CheckedChanged);
             // 
             // PopupWindowCheckBox
             // 
@@ -219,7 +218,6 @@ namespace SiteMon
             this.PopupWindowCheckBox.TabIndex = 0;
             this.PopupWindowCheckBox.Text = "Popup window";
             this.PopupWindowCheckBox.UseVisualStyleBackColor = true;
-            this.PopupWindowCheckBox.CheckedChanged += new System.EventHandler(this.PopupWindowCheckBox_CheckedChanged);
             // 
             // groupBox2
             // 

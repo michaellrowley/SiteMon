@@ -1,3 +1,4 @@
+
 # SiteMon
 
 SiteMon is a tool that allows users to monitor specific webpages for minor/major changes based on a set of rules.
@@ -10,29 +11,58 @@ SiteMon is a tool that allows users to monitor specific webpages for minor/major
 
 ## Usage:
 <center>
-<img style="height: 250px;border:dotted #cccccc 2px;" src="https://i.ibb.co/fG9XvXC/SITEMON-CONFIGURATION.png"/>
-</center>
+<img style="height: 250px;border:dotted #cccccc 2px;" src="https://i.ibb.co/yNq8fSX/SITEMON-CONFIGURATION.png"/><br>
 The above screenshot is pretty self-explanatory of how most of the SiteMon UI is laid out and operates, here's a breakdown of its options:
+</center>
 
+## Configuring SiteMon
+### Notifications
 
-| UI Name       | Description |
-| ------------- | ----------- |
-| 'Notification->Popup window' | Shows a popup window when a change is detected. |
-| 'Notification->Open URL' | Opens the URL to a given website when a change is detected on it. |
-| 'Notification->Alert sound' | Plays a sound when a change is detected. |
-| 'Notification->Message-box' | Shows a messagebox/prompt when a change is detected. |
-| 'IO->Export' | Export the current UI/configuration values to an external location. |
-| 'IO->Import' | Imports an exported (see above) configuration/array of UI values from an external location. |
-| 'IO->Change-logging' | When a change is detected, a copy of the unchanged page and changed page are written to a given location (with whitelisted lines removed). |
-| 'Internet-Courtesy->User-agent:' | Changes the user-agent header value sent with all requests, if this is set to an empty string or ``[AUTO]`` SiteMon automatically generates a dynamic one that lets web-servers know the version of sitemon running, its delay period, and provides a link to the project in-case they have (and therefore would like to open) an issue. |
-| 'Internet-Courtesy->Delay' | Changes the delay between requests for a given page, this is limited in the WinForms setting to 1500ms (1.5s) to avoid spamming a server with an obnoxious amount of requests, this ensures that your IP is less likely to be blocked by an automated DDoS prevention service. (Also, less resources are used within a given timescale as threads sleep for longer between requests.) I'd advise that users set this to a figure anywhere between 30s (30,000ms) to 30m (1,800,000ms). |
-| 'Whitelist->[TABLE]' | A list of REGEXes that each line of a HTTP(s) response should be checked for, if the line does contain a regex on this list, it is ignored and will not be included when the current and previous pages are checked for differences. |
+*SiteMon notifications can be interpreted/logged in four ways:*
+
+- **Popup window:**
+	A (very basic) popup window will be shown in order to alert the user that a change has been detected.
+- **Open URL:**
+	The URL that a change has been detected in will be opened using the user's default web browser.
+- **Alert sound:**
+	The generic windows error sound will be played when a change is detected.
+- **Message-box:**
+	Similar in nature to the 'Popup window' option, a standard .NET message-box will be displayed, notifying the user that a change has been detected.
+
+### IO
+
+*This section concerns itself with the input/output section of the program (file writing/reading/encrypting)*:
+
+- **Export:**
+	Exports the current configuration to a user-chosen location, encrypting the file where applicable.
+- **Import:**
+	Imports the current configuration from a user-chosen location, decrypting the file where applicable.
+- **Encryption key:**
+	The encryption key that should be used to encrypt/decrypt any configuration files that are interacted with. If left empty; no encryption will occur.
+- **Change-logging:**
+	Whenever a change is detected, the changed version of the website will be saved with a filename consisting of the file's SHA1 and the time/date at which it was detected.
+
+*If used, SiteMon encrypts configuration files with the .NET ``Aes`` [class](https://docs.microsoft.com/en-us/dotnet/api/system.security.cryptography.aes?view=net-6.0) with an initialization vector generated using the .NET [CSPRNG class](https://docs.microsoft.com/en-us/dotnet/api/system.security.cryptography.rngcryptoserviceprovider?view=net-6.0) - meaning that if there is an issue/vulnerability with either of those classes, the security/integrity of this application will be impacted greatly (so keep an eye on [MSRC](https://msrc.microsoft.com/update-guide/vulnerability).)*
+
+### Networking
+
+*This section is focused on the networking-side of SiteMon (primarily, not spamming servers with weird logs):*
+
+- **User-agent:**
+	The value of the header ``User-Agent`` that all requests are accompanied by. If left to '[AUTO]' then a user-agent that conforms to the [RFC1945-10.15](https://www.rfc-editor.org/rfc/rfc1945#section-10.15) is specification and used (this provides servers with the version number of SiteMon.)
+- **Delay (ms):**
+	The time that each monitoring-thread sleeps for between site-checks, the minimum value for this is 1,500 (1.5s) to avoid causing accidental DoS or annoying server administrators with weird logs.
+
+### Whitelist
+
+The whitelist section is a [DataGridView](https://docs.microsoft.com/en-us/dotnet/desktop/winforms/controls/datagridview-control-windows-forms?view=netframeworkdesktop-4.8) with one column; 'Regex' - the input for those columns should be Regex samples, the regular expressions listed in this area are 'whitelisted' in that notifications are not created/shown for pages that (after removing Regex-applicable lines) have no changes.
 
 ## How it works:
 SiteMon launches one thread for each monitoring target so that, even if something goes wrong on thread A, thread B can (in theory) continue monitoring its host, thus reducing the amount of impact an exception can have on an application.
+
 Each of these threads enters a loop where it requests a page, removes REGEX-matching lines from it, compares the page to its previous capture, and then depending on the outcome of the aforementioned comparison, either alerts the user (depending on their configuration) or does nothing - SiteMon then sleeps for a specified delay and repeats the above steps.
 
 ## Compiling:
 Compiling SiteMon can be done via [Visual Studio](https://visualstudio.microsoft.com/downloads/) or [CSC](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/compiler-options/) (I believe Visual Studio uses CSC anyway) but I'd advise that you use Visual Studio as it provides more verbose error information and suggests patches with intellisense.
 
-Simply open the ``SiteMon.sln`` file, ensure that the dropdown at the top of the window says 'Release' and not 'Debug' and press <kbd>CTRL</kbd> + <kbd>B</kbd> to start compiling/building the project. After that, an executable version of SiteMon (and some metadata files) should be in ``/bin/Releases/``.
+Simply open the ``SiteMon.sln`` file, ensure that the dropdown at the top of the window says 'Release' and not 'Debug' and press <kbd>CTRL</kbd> + <kbd>B</kbd> to start compiling/building the project. After that, an executable version of SiteMon (and some metadata files) should be in ``/bin/Release/``.
