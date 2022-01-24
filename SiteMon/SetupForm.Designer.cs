@@ -204,6 +204,7 @@ namespace SiteMon
             this.OpenUrlCheckBox.TabIndex = 1;
             this.OpenUrlCheckBox.Text = "Open URL";
             this.OpenUrlCheckBox.UseVisualStyleBackColor = true;
+            this.OpenUrlCheckBox.CheckedChanged += new System.EventHandler(this.OpenUrlCheckBox_CheckedChanged);
             // 
             // PopupWindowCheckBox
             // 

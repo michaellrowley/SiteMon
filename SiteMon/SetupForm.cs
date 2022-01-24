@@ -216,11 +216,6 @@ namespace SiteMon
         private void LogsTextBox_TextChanged(object sender, EventArgs e) {
             Configuration.Logs = this.LogsTextBox.Text;
         }
-
-        private void PopupWindowCheckBox_CheckedChanged(object sender, EventArgs e)
-        {
-            // TODO: Finish implementing
-        }
     }
 }
 public static class Configuration {
