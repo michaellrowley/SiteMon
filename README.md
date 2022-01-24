@@ -11,7 +11,7 @@ SiteMon is a tool that allows users to monitor specific webpages for minor/major
 
 ## Usage:
 <center>
-<img style="height: 250px;border:dotted #cccccc 2px;" src="https://i.ibb.co/yNq8fSX/SITEMON-CONFIGURATION.png"/><br>
+<img style="height: 250px;border:dotted #cccccc 2px;" src="https://i.ibb.co/ZHNpvBp/SITEMON-CONFIGURATION.png"/><br>
 The above screenshot is pretty self-explanatory of how most of the SiteMon UI is laid out and operates, here's a breakdown of its options:
 </center>
 
