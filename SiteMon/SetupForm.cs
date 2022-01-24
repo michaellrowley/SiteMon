@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Security.Cryptography;
 using System.Windows.Forms;
+using System.Text;
+using System.IO;
 
 namespace SiteMon
 {
@@ -121,8 +124,21 @@ namespace SiteMon
                 MessageBox.Show("Invalid location provided.");
                 return;
             }
-            string ConfigData = System.IO.File.ReadAllText(ImportConfigDialog.FileName);
-            if (!Configuration.LoadFromConfig(ConfigData)) {
+            byte[] ConfigData = File.ReadAllBytes(ImportConfigDialog.FileName);
+            string EncryptionKey = this.EncryptionKeyTextBox.Text;
+            if (EncryptionKey != string.Empty) {
+                Aes AesAlgorithm = Aes.Create();
+                while (EncryptionKey.Length * 16 < AesAlgorithm.KeySize) {
+                    EncryptionKey += " ";
+                }
+                byte[] IVBytes = new byte[AesAlgorithm.IV.Length];
+                Buffer.BlockCopy(ConfigData, 0, IVBytes, 0, AesAlgorithm.IV.Length);
+                ICryptoTransform AesDecryptor = AesAlgorithm.CreateDecryptor(
+                    Encoding.Unicode.GetBytes(EncryptionKey),
+                    IVBytes);
+                ConfigData = AesDecryptor.TransformFinalBlock(ConfigData, IVBytes.Length, ConfigData.Length - IVBytes.Length);
+            }
+            if (!Configuration.LoadFromConfig(Encoding.ASCII.GetString(ConfigData))) {
                 MessageBox.Show("Unable to load config.");
                 return;
             }
@@ -137,8 +153,32 @@ namespace SiteMon
             }
 
             UpdateConfig();
-            string SerializedConfig = Configuration.Serialize();
-            System.IO.File.WriteAllText(ExportConfigDialog.FileName, SerializedConfig);
+            byte[] SerializedConfig = Encoding.ASCII.GetBytes(Configuration.Serialize());
+            string EncryptionKey = this.EncryptionKeyTextBox.Text;
+            if (EncryptionKey != string.Empty)
+            {
+                Aes AesAlgorithm = Aes.Create(); // 'new RijndaelManaged()' is obsolete.
+                AesAlgorithm.Mode = CipherMode.CBC;
+                byte[] IVBytes = new byte[AesAlgorithm.IV.Length];
+                RandomNumberGenerator CSPRNG = new RNGCryptoServiceProvider();
+                CSPRNG.GetBytes(IVBytes, 0, IVBytes.Length);
+//                AesAlgorithm.IV = IVBytes;
+                CSPRNG.Dispose();
+                while (EncryptionKey.Length * 16 < AesAlgorithm.KeySize) {
+                    EncryptionKey += " ";
+                }
+//                AesAlgorithm.Key = Encoding.Unicode.GetBytes(Configuration.EncryptionKey);
+                ICryptoTransform AesEncryptor = AesAlgorithm.CreateEncryptor(
+                    Encoding.Unicode.GetBytes(EncryptionKey),
+                    IVBytes);
+                int EncryptedLength = ((SerializedConfig.Length / 16) + 1) * 16;
+                byte[] EncryptedBuffer = AesEncryptor.TransformFinalBlock(SerializedConfig,
+                    0, SerializedConfig.Length);
+                SerializedConfig = new byte[EncryptedLength + IVBytes.Length];
+                IVBytes.CopyTo(SerializedConfig, 0);
+                EncryptedBuffer.CopyTo(SerializedConfig, IVBytes.Length);
+            }
+            System.IO.File.WriteAllBytes(ExportConfigDialog.FileName, SerializedConfig);
             MessageBox.Show("Exported!");
         }
 
@@ -176,10 +216,15 @@ namespace SiteMon
         private void LogsTextBox_TextChanged(object sender, EventArgs e) {
             Configuration.Logs = this.LogsTextBox.Text;
         }
+
+        private void PopupWindowCheckBox_CheckedChanged(object sender, EventArgs e)
+        {
+            // TODO: Finish implementing
+        }
     }
 }
 public static class Configuration {
-    public static string Version = "v0.7.4";
+    public static readonly string Version = "v0.8.4";
     public static string[] Regexes = new string[0];
     public static List<KeyValuePair<string, string>> Targets = new List<KeyValuePair<string, string>>(0); // { <NAME, URL> }
     public static string UserAgent;
@@ -197,7 +242,7 @@ public static class Configuration {
         Header += "// Project: HTTPS://GITHUB.COM/MICHAELLROWLEY/SITEMON\n";
         Header += $"// Version: {Configuration.Version}\n";
         Header += $"// Created: {DateTime.Now.ToString()}\n";
-        Header += $"// All lines beginning with two slashes ('//') are optional.\n";
+        Header += "// All lines beginning with two slashes ('//') are optional.\n";
         return Header;
     }
     public static string Serialize() {
@@ -266,6 +311,8 @@ public static class Configuration {
                 DataLine.Trim(new char[] { ' ', '\t' }) == string.Empty) {
                 if ((ParsingStage == 9 || ParsingStage == 8 || ParsingStage == 10)
                     && DataLine == string.Empty) {
+                    // The end of the above stages' data is indicated by
+                    // a single empty line.
                     ParsingStage++;
                 }
                 continue;
@@ -315,19 +362,17 @@ public static class Configuration {
                         ParsingStage++;
                     }
                     break;
-                case 8: {
+                case 8:
                         // this.ChangeLogsLocation
                         Configuration.ChangeLogsLocation = DataLine;
                         ParsingStage++;
-                    }
                     break;
-                case 9: {
+                case 9:
                         // this.Regexes
                         if (!DataLine.StartsWith("\t")) {
                             return false;
                         }
                         RegexList.Add(DataLine.TrimStart(new char[] { '\t' }));
-                    }
                     break;
                 case 10: {
                         // this.Targets
@@ -341,13 +386,11 @@ public static class Configuration {
                         ));
                     }
                     break;
-                case 11: {
+                case 11:
                         Configuration.Logs += "\n" + DataLine.TrimStart(new char[] { '\t' });
-                    }
                     break;
                 default:
                     return false;
-                    break; // Should never be hit.
             }
         }
             Configuration.Regexes = RegexList.ToArray();
