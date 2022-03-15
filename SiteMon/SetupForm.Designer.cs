@@ -42,6 +42,7 @@ namespace SiteMon
             this.OpenUrlCheckBox = new System.Windows.Forms.CheckBox();
             this.PopupWindowCheckBox = new System.Windows.Forms.CheckBox();
             this.IoGroupBox = new System.Windows.Forms.GroupBox();
+            this.ToggleEncKeyVisibilityBtn = new System.Windows.Forms.Button();
             this.GenEncKeyButton = new System.Windows.Forms.Button();
             this.EncryptionKeyTextBox = new System.Windows.Forms.TextBox();
             this.ChangeLogLocationTextBox = new System.Windows.Forms.TextBox();
@@ -65,7 +66,6 @@ namespace SiteMon
             this.ImportConfigDialog = new System.Windows.Forms.OpenFileDialog();
             this.ChangeLogLocationDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.LogUpdater = new System.Windows.Forms.Timer(this.components);
-            this.ToggleEncKeyVisibilityBtn = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.MonitorListGridView)).BeginInit();
             this.MonitorListTab.SuspendLayout();
             this.MonitorListTabPage.SuspendLayout();
@@ -238,6 +238,17 @@ namespace SiteMon
             this.IoGroupBox.TabStop = false;
             this.IoGroupBox.Text = "IO";
             // 
+            // ToggleEncKeyVisibilityBtn
+            // 
+            this.ToggleEncKeyVisibilityBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.ToggleEncKeyVisibilityBtn.Location = new System.Drawing.Point(170, 78);
+            this.ToggleEncKeyVisibilityBtn.Name = "ToggleEncKeyVisibilityBtn";
+            this.ToggleEncKeyVisibilityBtn.Size = new System.Drawing.Size(25, 23);
+            this.ToggleEncKeyVisibilityBtn.TabIndex = 8;
+            this.ToggleEncKeyVisibilityBtn.Text = "👀";
+            this.ToggleEncKeyVisibilityBtn.UseVisualStyleBackColor = true;
+            this.ToggleEncKeyVisibilityBtn.Click += new System.EventHandler(this.ToggleEncKeyVisibilityBtn_Click);
+            // 
             // GenEncKeyButton
             // 
             this.GenEncKeyButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
@@ -254,6 +265,7 @@ namespace SiteMon
             // 
             this.EncryptionKeyTextBox.BackColor = System.Drawing.SystemColors.Window;
             this.EncryptionKeyTextBox.Location = new System.Drawing.Point(40, 80);
+            this.EncryptionKeyTextBox.MaxLength = 16;
             this.EncryptionKeyTextBox.Name = "EncryptionKeyTextBox";
             this.EncryptionKeyTextBox.Size = new System.Drawing.Size(120, 20);
             this.EncryptionKeyTextBox.TabIndex = 4;
@@ -483,17 +495,6 @@ namespace SiteMon
             this.LogUpdater.Enabled = true;
             this.LogUpdater.Interval = 1500;
             this.LogUpdater.Tick += new System.EventHandler(this.LogUpdater_Tick);
-            // 
-            // ToggleEncKeyVisibilityBtn
-            // 
-            this.ToggleEncKeyVisibilityBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.ToggleEncKeyVisibilityBtn.Location = new System.Drawing.Point(170, 78);
-            this.ToggleEncKeyVisibilityBtn.Name = "ToggleEncKeyVisibilityBtn";
-            this.ToggleEncKeyVisibilityBtn.Size = new System.Drawing.Size(25, 23);
-            this.ToggleEncKeyVisibilityBtn.TabIndex = 8;
-            this.ToggleEncKeyVisibilityBtn.Text = "👀";
-            this.ToggleEncKeyVisibilityBtn.UseVisualStyleBackColor = true;
-            this.ToggleEncKeyVisibilityBtn.Click += new System.EventHandler(this.ToggleEncKeyVisibilityBtn_Click);
             // 
             // SetupForm
             // 

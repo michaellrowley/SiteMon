@@ -223,9 +223,9 @@ namespace SiteMon
 
         private void GenEncKeyButton_Click(object sender, EventArgs e)
         {
-            byte[] EncryptionKeyRaw = new byte[64];
+            byte[] EncryptionKeyRaw = new byte[16];
             this.EncryptionKeyTextBox.Text = string.Empty;
-            CSPRNG.GetBytes(EncryptionKeyRaw, 0, 64);
+            CSPRNG.GetBytes(EncryptionKeyRaw, 0, EncryptionKeyRaw.Length);
             foreach (byte k in EncryptionKeyRaw) {
                 this.EncryptionKeyTextBox.Text += ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcde" +
                     "fghijklmnopqrstuvwxyz0123456789!\"£$%^&*()_+-={}[]@~'#,./<>?|\\`¬")[((int)k) % 94];
