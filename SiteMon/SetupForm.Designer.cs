@@ -273,7 +273,7 @@ namespace SiteMon
             // 
             // ChangeLogLocationTextBox
             // 
-            this.ChangeLogLocationTextBox.Location = new System.Drawing.Point(95, 52);
+            this.ChangeLogLocationTextBox.Location = new System.Drawing.Point(95, 43);
             this.ChangeLogLocationTextBox.Name = "ChangeLogLocationTextBox";
             this.ChangeLogLocationTextBox.ReadOnly = true;
             this.ChangeLogLocationTextBox.Size = new System.Drawing.Size(100, 20);
@@ -284,7 +284,7 @@ namespace SiteMon
             // 
             this.ChangeLoggingCheckBox.AutoSize = true;
             this.ChangeLoggingCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopRight;
-            this.ChangeLoggingCheckBox.Location = new System.Drawing.Point(95, 23);
+            this.ChangeLoggingCheckBox.Location = new System.Drawing.Point(95, 26);
             this.ChangeLoggingCheckBox.Name = "ChangeLoggingCheckBox";
             this.ChangeLoggingCheckBox.Size = new System.Drawing.Size(100, 17);
             this.ChangeLoggingCheckBox.TabIndex = 2;
