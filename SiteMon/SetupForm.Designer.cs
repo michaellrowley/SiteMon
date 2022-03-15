@@ -65,6 +65,7 @@ namespace SiteMon
             this.ImportConfigDialog = new System.Windows.Forms.OpenFileDialog();
             this.ChangeLogLocationDialog = new System.Windows.Forms.FolderBrowserDialog();
             this.LogUpdater = new System.Windows.Forms.Timer(this.components);
+            this.ToggleEncKeyVisibilityBtn = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.MonitorListGridView)).BeginInit();
             this.MonitorListTab.SuspendLayout();
             this.MonitorListTabPage.SuspendLayout();
@@ -223,6 +224,7 @@ namespace SiteMon
             // 
             this.IoGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.IoGroupBox.Controls.Add(this.ToggleEncKeyVisibilityBtn);
             this.IoGroupBox.Controls.Add(this.GenEncKeyButton);
             this.IoGroupBox.Controls.Add(this.EncryptionKeyTextBox);
             this.IoGroupBox.Controls.Add(this.ChangeLogLocationTextBox);
@@ -238,26 +240,28 @@ namespace SiteMon
             // 
             // GenEncKeyButton
             // 
+            this.GenEncKeyButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
             this.GenEncKeyButton.Location = new System.Drawing.Point(9, 77);
             this.GenEncKeyButton.Name = "GenEncKeyButton";
-            this.GenEncKeyButton.Size = new System.Drawing.Size(71, 23);
+            this.GenEncKeyButton.Size = new System.Drawing.Size(25, 23);
             this.GenEncKeyButton.TabIndex = 6;
-            this.GenEncKeyButton.Text = "Generate";
+            this.GenEncKeyButton.Text = "🔮";
+            this.GenEncKeyButton.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             this.GenEncKeyButton.UseVisualStyleBackColor = true;
             this.GenEncKeyButton.Click += new System.EventHandler(this.GenEncKeyButton_Click);
             // 
             // EncryptionKeyTextBox
             // 
             this.EncryptionKeyTextBox.BackColor = System.Drawing.SystemColors.Window;
-            this.EncryptionKeyTextBox.Location = new System.Drawing.Point(95, 79);
+            this.EncryptionKeyTextBox.Location = new System.Drawing.Point(40, 80);
             this.EncryptionKeyTextBox.Name = "EncryptionKeyTextBox";
-            this.EncryptionKeyTextBox.Size = new System.Drawing.Size(100, 20);
+            this.EncryptionKeyTextBox.Size = new System.Drawing.Size(120, 20);
             this.EncryptionKeyTextBox.TabIndex = 4;
             this.EncryptionKeyTextBox.UseSystemPasswordChar = true;
             // 
             // ChangeLogLocationTextBox
             // 
-            this.ChangeLogLocationTextBox.Location = new System.Drawing.Point(95, 50);
+            this.ChangeLogLocationTextBox.Location = new System.Drawing.Point(95, 52);
             this.ChangeLogLocationTextBox.Name = "ChangeLogLocationTextBox";
             this.ChangeLogLocationTextBox.ReadOnly = true;
             this.ChangeLogLocationTextBox.Size = new System.Drawing.Size(100, 20);
@@ -480,6 +484,17 @@ namespace SiteMon
             this.LogUpdater.Interval = 1500;
             this.LogUpdater.Tick += new System.EventHandler(this.LogUpdater_Tick);
             // 
+            // ToggleEncKeyVisibilityBtn
+            // 
+            this.ToggleEncKeyVisibilityBtn.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
+            this.ToggleEncKeyVisibilityBtn.Location = new System.Drawing.Point(170, 78);
+            this.ToggleEncKeyVisibilityBtn.Name = "ToggleEncKeyVisibilityBtn";
+            this.ToggleEncKeyVisibilityBtn.Size = new System.Drawing.Size(25, 23);
+            this.ToggleEncKeyVisibilityBtn.TabIndex = 8;
+            this.ToggleEncKeyVisibilityBtn.Text = "👀";
+            this.ToggleEncKeyVisibilityBtn.UseVisualStyleBackColor = true;
+            this.ToggleEncKeyVisibilityBtn.Click += new System.EventHandler(this.ToggleEncKeyVisibilityBtn_Click);
+            // 
             // SetupForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -549,5 +564,6 @@ namespace SiteMon
         private System.Windows.Forms.DataGridViewTextBoxColumn URLColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn RegexColumn;
         private System.Windows.Forms.Button GenEncKeyButton;
+        private System.Windows.Forms.Button ToggleEncKeyVisibilityBtn;
     }
 }

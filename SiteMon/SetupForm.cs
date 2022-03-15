@@ -233,6 +233,11 @@ namespace SiteMon
                     "fghijklmnopqrstuvwxyz0123456789!\"£$%^&*()_+-={}[]@~'#,./<>?|\\`¬")[((int)k) % 94];
             }
         }
+
+        private void ToggleEncKeyVisibilityBtn_Click(object sender, EventArgs e)
+        {
+            this.EncryptionKeyTextBox.UseSystemPasswordChar = !this.EncryptionKeyTextBox.UseSystemPasswordChar;
+        }
     }
 }
 public static class Configuration {
