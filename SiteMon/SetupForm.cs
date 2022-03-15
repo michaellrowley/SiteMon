@@ -168,12 +168,10 @@ namespace SiteMon
                 AesAlgorithm.Mode = CipherMode.CBC;
                 byte[] IVBytes = new byte[AesAlgorithm.IV.Length];
                 CSPRNG.GetBytes(IVBytes, 0, IVBytes.Length);
-//                AesAlgorithm.IV = IVBytes;
                 CSPRNG.Dispose();
                 while (EncryptionKey.Length * 16 < AesAlgorithm.KeySize) {
                     EncryptionKey += " ";
                 }
-//                AesAlgorithm.Key = Encoding.Unicode.GetBytes(Configuration.EncryptionKey);
                 ICryptoTransform AesEncryptor = AesAlgorithm.CreateEncryptor(
                     Encoding.Unicode.GetBytes(EncryptionKey),
                     IVBytes);
