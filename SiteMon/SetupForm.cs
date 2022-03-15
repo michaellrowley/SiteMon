@@ -9,6 +9,8 @@ namespace SiteMon
 {
     public partial class SetupForm : Form
     {
+        // This CSPRNG is used for 
+        static private RandomNumberGenerator CSPRNG = new RNGCryptoServiceProvider();
         public SetupForm() {
             InitializeComponent();
         }
@@ -59,7 +61,12 @@ namespace SiteMon
         private void MonitorListTab_Click(object sender, EventArgs e) {
             ((TabControl)sender).SelectedTab.Focus();
         }
-        private void SetupForm_Load(object sender, EventArgs e) { }
+        private void SetupForm_Load(object sender, EventArgs e) {
+            new ToolTip().SetToolTip(this.ExportButton, "Export your active SiteMon configuration.");
+            new ToolTip().SetToolTip(this.ImportButton, "Import an exported SiteMon configuration from a file.");
+            new ToolTip().SetToolTip(this.ChangeLogLocationTextBox, "The location that changes will be logged.");
+            new ToolTip().SetToolTip(this.ChangeLoggingCheckBox, "Toggles the logging of page changes.");
+        }
         private T[] GridViewToArray<T>(DataGridView Source, int Index = 0, bool IgnoreLast = true) {
             List<T> Array = new List<T>(0);
             for (int i = 0; i < Source.Rows.Count - (IgnoreLast ? 1 : 0); i++) {
@@ -160,7 +167,6 @@ namespace SiteMon
                 Aes AesAlgorithm = Aes.Create(); // 'new RijndaelManaged()' is obsolete.
                 AesAlgorithm.Mode = CipherMode.CBC;
                 byte[] IVBytes = new byte[AesAlgorithm.IV.Length];
-                RandomNumberGenerator CSPRNG = new RNGCryptoServiceProvider();
                 CSPRNG.GetBytes(IVBytes, 0, IVBytes.Length);
 //                AesAlgorithm.IV = IVBytes;
                 CSPRNG.Dispose();
@@ -215,6 +221,17 @@ namespace SiteMon
 
         private void LogsTextBox_TextChanged(object sender, EventArgs e) {
             Configuration.Logs = this.LogsTextBox.Text;
+        }
+
+        private void GenEncKeyButton_Click(object sender, EventArgs e)
+        {
+            byte[] EncryptionKeyRaw = new byte[64];
+            this.EncryptionKeyTextBox.Text = string.Empty;
+            CSPRNG.GetBytes(EncryptionKeyRaw, 0, 64);
+            foreach (byte k in EncryptionKeyRaw) {
+                this.EncryptionKeyTextBox.Text += ("ABCDEFGHIJKLMNOPQRSTUVWXYZabcde" +
+                    "fghijklmnopqrstuvwxyz0123456789!\"£$%^&*()_+-={}[]@~'#,./<>?|\\`¬")[((int)k) % 94];
+            }
         }
     }
 }

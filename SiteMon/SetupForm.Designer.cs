@@ -36,13 +36,13 @@ namespace SiteMon
             this.MonitorListTab = new System.Windows.Forms.TabControl();
             this.MonitorListTabPage = new System.Windows.Forms.TabPage();
             this.GeneralConfigTabPage = new System.Windows.Forms.TabPage();
-            this.groupBox3 = new System.Windows.Forms.GroupBox();
+            this.NotificationsGroupBox = new System.Windows.Forms.GroupBox();
             this.MessageBoxCheckBox = new System.Windows.Forms.CheckBox();
             this.PlaySoundCheckBox = new System.Windows.Forms.CheckBox();
             this.OpenUrlCheckBox = new System.Windows.Forms.CheckBox();
             this.PopupWindowCheckBox = new System.Windows.Forms.CheckBox();
-            this.groupBox2 = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
+            this.IoGroupBox = new System.Windows.Forms.GroupBox();
+            this.GenEncKeyButton = new System.Windows.Forms.Button();
             this.EncryptionKeyTextBox = new System.Windows.Forms.TextBox();
             this.ChangeLogLocationTextBox = new System.Windows.Forms.TextBox();
             this.ChangeLoggingCheckBox = new System.Windows.Forms.CheckBox();
@@ -69,8 +69,8 @@ namespace SiteMon
             this.MonitorListTab.SuspendLayout();
             this.MonitorListTabPage.SuspendLayout();
             this.GeneralConfigTabPage.SuspendLayout();
-            this.groupBox3.SuspendLayout();
-            this.groupBox2.SuspendLayout();
+            this.NotificationsGroupBox.SuspendLayout();
+            this.IoGroupBox.SuspendLayout();
             this.groupBox1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DelayUpDown)).BeginInit();
             this.WhitelistGroupBox.SuspendLayout();
@@ -138,8 +138,8 @@ namespace SiteMon
             // 
             // GeneralConfigTabPage
             // 
-            this.GeneralConfigTabPage.Controls.Add(this.groupBox3);
-            this.GeneralConfigTabPage.Controls.Add(this.groupBox2);
+            this.GeneralConfigTabPage.Controls.Add(this.NotificationsGroupBox);
+            this.GeneralConfigTabPage.Controls.Add(this.IoGroupBox);
             this.GeneralConfigTabPage.Controls.Add(this.groupBox1);
             this.GeneralConfigTabPage.Controls.Add(this.WhitelistGroupBox);
             this.GeneralConfigTabPage.Location = new System.Drawing.Point(4, 22);
@@ -150,21 +150,21 @@ namespace SiteMon
             this.GeneralConfigTabPage.Text = "Configuration";
             this.GeneralConfigTabPage.UseVisualStyleBackColor = true;
             // 
-            // groupBox3
+            // NotificationsGroupBox
             // 
-            this.groupBox3.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.NotificationsGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox3.Controls.Add(this.MessageBoxCheckBox);
-            this.groupBox3.Controls.Add(this.PlaySoundCheckBox);
-            this.groupBox3.Controls.Add(this.OpenUrlCheckBox);
-            this.groupBox3.Controls.Add(this.PopupWindowCheckBox);
-            this.groupBox3.Location = new System.Drawing.Point(6, 3);
-            this.groupBox3.Name = "groupBox3";
-            this.groupBox3.Size = new System.Drawing.Size(373, 38);
-            this.groupBox3.TabIndex = 8;
-            this.groupBox3.TabStop = false;
-            this.groupBox3.Text = "Notification";
+            this.NotificationsGroupBox.Controls.Add(this.MessageBoxCheckBox);
+            this.NotificationsGroupBox.Controls.Add(this.PlaySoundCheckBox);
+            this.NotificationsGroupBox.Controls.Add(this.OpenUrlCheckBox);
+            this.NotificationsGroupBox.Controls.Add(this.PopupWindowCheckBox);
+            this.NotificationsGroupBox.Location = new System.Drawing.Point(6, 3);
+            this.NotificationsGroupBox.Name = "NotificationsGroupBox";
+            this.NotificationsGroupBox.Size = new System.Drawing.Size(373, 38);
+            this.NotificationsGroupBox.TabIndex = 8;
+            this.NotificationsGroupBox.TabStop = false;
+            this.NotificationsGroupBox.Text = "Notification";
             // 
             // MessageBoxCheckBox
             // 
@@ -219,36 +219,37 @@ namespace SiteMon
             this.PopupWindowCheckBox.Text = "Popup window";
             this.PopupWindowCheckBox.UseVisualStyleBackColor = true;
             // 
-            // groupBox2
+            // IoGroupBox
             // 
-            this.groupBox2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            this.IoGroupBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.groupBox2.Controls.Add(this.label1);
-            this.groupBox2.Controls.Add(this.EncryptionKeyTextBox);
-            this.groupBox2.Controls.Add(this.ChangeLogLocationTextBox);
-            this.groupBox2.Controls.Add(this.ChangeLoggingCheckBox);
-            this.groupBox2.Controls.Add(this.ExportButton);
-            this.groupBox2.Controls.Add(this.ImportButton);
-            this.groupBox2.Location = new System.Drawing.Point(6, 47);
-            this.groupBox2.Name = "groupBox2";
-            this.groupBox2.Size = new System.Drawing.Size(205, 109);
-            this.groupBox2.TabIndex = 7;
-            this.groupBox2.TabStop = false;
-            this.groupBox2.Text = "IO";
+            this.IoGroupBox.Controls.Add(this.GenEncKeyButton);
+            this.IoGroupBox.Controls.Add(this.EncryptionKeyTextBox);
+            this.IoGroupBox.Controls.Add(this.ChangeLogLocationTextBox);
+            this.IoGroupBox.Controls.Add(this.ChangeLoggingCheckBox);
+            this.IoGroupBox.Controls.Add(this.ExportButton);
+            this.IoGroupBox.Controls.Add(this.ImportButton);
+            this.IoGroupBox.Location = new System.Drawing.Point(6, 47);
+            this.IoGroupBox.Name = "IoGroupBox";
+            this.IoGroupBox.Size = new System.Drawing.Size(205, 109);
+            this.IoGroupBox.TabIndex = 7;
+            this.IoGroupBox.TabStop = false;
+            this.IoGroupBox.Text = "IO";
             // 
-            // label1
+            // GenEncKeyButton
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 80);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(80, 13);
-            this.label1.TabIndex = 5;
-            this.label1.Text = "Encryption key:";
+            this.GenEncKeyButton.Location = new System.Drawing.Point(9, 77);
+            this.GenEncKeyButton.Name = "GenEncKeyButton";
+            this.GenEncKeyButton.Size = new System.Drawing.Size(71, 23);
+            this.GenEncKeyButton.TabIndex = 6;
+            this.GenEncKeyButton.Text = "Generate";
+            this.GenEncKeyButton.UseVisualStyleBackColor = true;
+            this.GenEncKeyButton.Click += new System.EventHandler(this.GenEncKeyButton_Click);
             // 
             // EncryptionKeyTextBox
             // 
             this.EncryptionKeyTextBox.BackColor = System.Drawing.SystemColors.Window;
-            this.EncryptionKeyTextBox.Location = new System.Drawing.Point(95, 77);
+            this.EncryptionKeyTextBox.Location = new System.Drawing.Point(95, 79);
             this.EncryptionKeyTextBox.Name = "EncryptionKeyTextBox";
             this.EncryptionKeyTextBox.Size = new System.Drawing.Size(100, 20);
             this.EncryptionKeyTextBox.TabIndex = 4;
@@ -256,7 +257,7 @@ namespace SiteMon
             // 
             // ChangeLogLocationTextBox
             // 
-            this.ChangeLogLocationTextBox.Location = new System.Drawing.Point(95, 44);
+            this.ChangeLogLocationTextBox.Location = new System.Drawing.Point(95, 50);
             this.ChangeLogLocationTextBox.Name = "ChangeLogLocationTextBox";
             this.ChangeLogLocationTextBox.ReadOnly = true;
             this.ChangeLogLocationTextBox.Size = new System.Drawing.Size(100, 20);
@@ -267,7 +268,7 @@ namespace SiteMon
             // 
             this.ChangeLoggingCheckBox.AutoSize = true;
             this.ChangeLoggingCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopRight;
-            this.ChangeLoggingCheckBox.Location = new System.Drawing.Point(95, 19);
+            this.ChangeLoggingCheckBox.Location = new System.Drawing.Point(95, 23);
             this.ChangeLoggingCheckBox.Name = "ChangeLoggingCheckBox";
             this.ChangeLoggingCheckBox.Size = new System.Drawing.Size(100, 17);
             this.ChangeLoggingCheckBox.TabIndex = 2;
@@ -309,7 +310,7 @@ namespace SiteMon
             this.groupBox1.Controls.Add(this.label2);
             this.groupBox1.Location = new System.Drawing.Point(6, 158);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(205, 64);
+            this.groupBox1.Size = new System.Drawing.Size(205, 69);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Networking";
@@ -318,7 +319,7 @@ namespace SiteMon
             // 
             this.UserAgentTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.UserAgentTextBox.Location = new System.Drawing.Point(79, 11);
+            this.UserAgentTextBox.Location = new System.Drawing.Point(79, 17);
             this.UserAgentTextBox.Name = "UserAgentTextBox";
             this.UserAgentTextBox.ReadOnly = true;
             this.UserAgentTextBox.Size = new System.Drawing.Size(120, 20);
@@ -331,7 +332,7 @@ namespace SiteMon
             // 
             this.DelayUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.DelayUpDown.Location = new System.Drawing.Point(79, 38);
+            this.DelayUpDown.Location = new System.Drawing.Point(79, 44);
             this.DelayUpDown.Maximum = new decimal(new int[] {
             -727379968,
             232,
@@ -356,7 +357,7 @@ namespace SiteMon
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.854545F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(9, 47);
+            this.label3.Location = new System.Drawing.Point(9, 46);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(59, 13);
             this.label3.TabIndex = 5;
@@ -497,10 +498,10 @@ namespace SiteMon
             this.MonitorListTab.ResumeLayout(false);
             this.MonitorListTabPage.ResumeLayout(false);
             this.GeneralConfigTabPage.ResumeLayout(false);
-            this.groupBox3.ResumeLayout(false);
-            this.groupBox3.PerformLayout();
-            this.groupBox2.ResumeLayout(false);
-            this.groupBox2.PerformLayout();
+            this.NotificationsGroupBox.ResumeLayout(false);
+            this.NotificationsGroupBox.PerformLayout();
+            this.IoGroupBox.ResumeLayout(false);
+            this.IoGroupBox.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DelayUpDown)).EndInit();
@@ -527,12 +528,12 @@ namespace SiteMon
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
         private System.Windows.Forms.NumericUpDown DelayUpDown;
-        private System.Windows.Forms.GroupBox groupBox2;
+        private System.Windows.Forms.GroupBox IoGroupBox;
         private System.Windows.Forms.Button ImportButton;
         private System.Windows.Forms.Button ExportButton;
         private System.Windows.Forms.SaveFileDialog ExportConfigDialog;
         private System.Windows.Forms.OpenFileDialog ImportConfigDialog;
-        private System.Windows.Forms.GroupBox groupBox3;
+        private System.Windows.Forms.GroupBox NotificationsGroupBox;
         private System.Windows.Forms.CheckBox PopupWindowCheckBox;
         private System.Windows.Forms.CheckBox OpenUrlCheckBox;
         private System.Windows.Forms.CheckBox PlaySoundCheckBox;
@@ -544,9 +545,9 @@ namespace SiteMon
         private System.Windows.Forms.RichTextBox LogsTextBox;
         private System.Windows.Forms.Timer LogUpdater;
         private System.Windows.Forms.TextBox EncryptionKeyTextBox;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.DataGridViewTextBoxColumn NameColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn URLColumn;
         private System.Windows.Forms.DataGridViewTextBoxColumn RegexColumn;
+        private System.Windows.Forms.Button GenEncKeyButton;
     }
 }
