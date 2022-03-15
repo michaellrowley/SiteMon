@@ -267,7 +267,7 @@ namespace SiteMon
             // 
             this.ChangeLoggingCheckBox.AutoSize = true;
             this.ChangeLoggingCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopRight;
-            this.ChangeLoggingCheckBox.Location = new System.Drawing.Point(95, 17);
+            this.ChangeLoggingCheckBox.Location = new System.Drawing.Point(95, 19);
             this.ChangeLoggingCheckBox.Name = "ChangeLoggingCheckBox";
             this.ChangeLoggingCheckBox.Size = new System.Drawing.Size(100, 17);
             this.ChangeLoggingCheckBox.TabIndex = 2;
@@ -380,9 +380,9 @@ namespace SiteMon
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.WhitelistGroupBox.Controls.Add(this.RegexWhitelistGridView);
-            this.WhitelistGroupBox.Location = new System.Drawing.Point(217, 51);
+            this.WhitelistGroupBox.Location = new System.Drawing.Point(217, 47);
             this.WhitelistGroupBox.Name = "WhitelistGroupBox";
-            this.WhitelistGroupBox.Size = new System.Drawing.Size(168, 179);
+            this.WhitelistGroupBox.Size = new System.Drawing.Size(168, 183);
             this.WhitelistGroupBox.TabIndex = 2;
             this.WhitelistGroupBox.TabStop = false;
             this.WhitelistGroupBox.Text = "Whitelist";
@@ -401,7 +401,7 @@ namespace SiteMon
             this.RegexWhitelistGridView.Location = new System.Drawing.Point(6, 19);
             this.RegexWhitelistGridView.Name = "RegexWhitelistGridView";
             this.RegexWhitelistGridView.RowHeadersWidth = 47;
-            this.RegexWhitelistGridView.Size = new System.Drawing.Size(156, 154);
+            this.RegexWhitelistGridView.Size = new System.Drawing.Size(156, 158);
             this.RegexWhitelistGridView.TabIndex = 0;
             // 
             // RegexColumn
