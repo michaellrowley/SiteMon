@@ -50,6 +50,8 @@ namespace SiteMon
             this.ExportButton = new System.Windows.Forms.Button();
             this.ImportButton = new System.Windows.Forms.Button();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.ProxyTextBox = new System.Windows.Forms.TextBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.UserAgentTextBox = new System.Windows.Forms.TextBox();
             this.DelayUpDown = new System.Windows.Forms.NumericUpDown();
             this.label3 = new System.Windows.Forms.Label();
@@ -93,7 +95,7 @@ namespace SiteMon
             this.MonitorListGridView.Location = new System.Drawing.Point(3, 3);
             this.MonitorListGridView.Name = "MonitorListGridView";
             this.MonitorListGridView.RowHeadersWidth = 47;
-            this.MonitorListGridView.Size = new System.Drawing.Size(385, 221);
+            this.MonitorListGridView.Size = new System.Drawing.Size(385, 256);
             this.MonitorListGridView.TabIndex = 0;
             // 
             // NameColumn
@@ -118,10 +120,10 @@ namespace SiteMon
             this.MonitorListTab.Controls.Add(this.MonitorListTabPage);
             this.MonitorListTab.Controls.Add(this.GeneralConfigTabPage);
             this.MonitorListTab.Controls.Add(this.LoggingPage);
-            this.MonitorListTab.Location = new System.Drawing.Point(2, 27);
+            this.MonitorListTab.Location = new System.Drawing.Point(3, 30);
             this.MonitorListTab.Name = "MonitorListTab";
             this.MonitorListTab.SelectedIndex = 0;
-            this.MonitorListTab.Size = new System.Drawing.Size(399, 256);
+            this.MonitorListTab.Size = new System.Drawing.Size(399, 288);
             this.MonitorListTab.TabIndex = 1;
             this.MonitorListTab.Tag = "";
             this.MonitorListTab.Click += new System.EventHandler(this.MonitorListTab_Click);
@@ -132,7 +134,7 @@ namespace SiteMon
             this.MonitorListTabPage.Location = new System.Drawing.Point(4, 22);
             this.MonitorListTabPage.Name = "MonitorListTabPage";
             this.MonitorListTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.MonitorListTabPage.Size = new System.Drawing.Size(391, 230);
+            this.MonitorListTabPage.Size = new System.Drawing.Size(391, 262);
             this.MonitorListTabPage.TabIndex = 0;
             this.MonitorListTabPage.Text = "Monitor list";
             this.MonitorListTabPage.UseVisualStyleBackColor = true;
@@ -146,7 +148,7 @@ namespace SiteMon
             this.GeneralConfigTabPage.Location = new System.Drawing.Point(4, 22);
             this.GeneralConfigTabPage.Name = "GeneralConfigTabPage";
             this.GeneralConfigTabPage.Padding = new System.Windows.Forms.Padding(3);
-            this.GeneralConfigTabPage.Size = new System.Drawing.Size(391, 230);
+            this.GeneralConfigTabPage.Size = new System.Drawing.Size(391, 262);
             this.GeneralConfigTabPage.TabIndex = 1;
             this.GeneralConfigTabPage.Text = "Configuration";
             this.GeneralConfigTabPage.UseVisualStyleBackColor = true;
@@ -231,7 +233,7 @@ namespace SiteMon
             this.IoGroupBox.Controls.Add(this.ChangeLoggingCheckBox);
             this.IoGroupBox.Controls.Add(this.ExportButton);
             this.IoGroupBox.Controls.Add(this.ImportButton);
-            this.IoGroupBox.Location = new System.Drawing.Point(6, 47);
+            this.IoGroupBox.Location = new System.Drawing.Point(5, 47);
             this.IoGroupBox.Name = "IoGroupBox";
             this.IoGroupBox.Size = new System.Drawing.Size(205, 109);
             this.IoGroupBox.TabIndex = 7;
@@ -252,7 +254,7 @@ namespace SiteMon
             // GenEncKeyButton
             // 
             this.GenEncKeyButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F);
-            this.GenEncKeyButton.Location = new System.Drawing.Point(9, 77);
+            this.GenEncKeyButton.Location = new System.Drawing.Point(9, 78);
             this.GenEncKeyButton.Name = "GenEncKeyButton";
             this.GenEncKeyButton.Size = new System.Drawing.Size(25, 23);
             this.GenEncKeyButton.TabIndex = 6;
@@ -267,13 +269,13 @@ namespace SiteMon
             this.EncryptionKeyTextBox.Location = new System.Drawing.Point(40, 80);
             this.EncryptionKeyTextBox.MaxLength = 16;
             this.EncryptionKeyTextBox.Name = "EncryptionKeyTextBox";
-            this.EncryptionKeyTextBox.Size = new System.Drawing.Size(120, 20);
+            this.EncryptionKeyTextBox.Size = new System.Drawing.Size(124, 20);
             this.EncryptionKeyTextBox.TabIndex = 4;
             this.EncryptionKeyTextBox.UseSystemPasswordChar = true;
             // 
             // ChangeLogLocationTextBox
             // 
-            this.ChangeLogLocationTextBox.Location = new System.Drawing.Point(95, 43);
+            this.ChangeLogLocationTextBox.Location = new System.Drawing.Point(95, 48);
             this.ChangeLogLocationTextBox.Name = "ChangeLogLocationTextBox";
             this.ChangeLogLocationTextBox.ReadOnly = true;
             this.ChangeLogLocationTextBox.Size = new System.Drawing.Size(100, 20);
@@ -284,7 +286,7 @@ namespace SiteMon
             // 
             this.ChangeLoggingCheckBox.AutoSize = true;
             this.ChangeLoggingCheckBox.CheckAlign = System.Drawing.ContentAlignment.TopRight;
-            this.ChangeLoggingCheckBox.Location = new System.Drawing.Point(95, 26);
+            this.ChangeLoggingCheckBox.Location = new System.Drawing.Point(95, 24);
             this.ChangeLoggingCheckBox.Name = "ChangeLoggingCheckBox";
             this.ChangeLoggingCheckBox.Size = new System.Drawing.Size(100, 17);
             this.ChangeLoggingCheckBox.TabIndex = 2;
@@ -320,25 +322,49 @@ namespace SiteMon
             this.groupBox1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBox1.Controls.Add(this.ProxyTextBox);
+            this.groupBox1.Controls.Add(this.label1);
             this.groupBox1.Controls.Add(this.UserAgentTextBox);
             this.groupBox1.Controls.Add(this.DelayUpDown);
             this.groupBox1.Controls.Add(this.label3);
             this.groupBox1.Controls.Add(this.label2);
-            this.groupBox1.Location = new System.Drawing.Point(6, 158);
+            this.groupBox1.Location = new System.Drawing.Point(6, 162);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(205, 69);
+            this.groupBox1.Size = new System.Drawing.Size(205, 100);
             this.groupBox1.TabIndex = 3;
             this.groupBox1.TabStop = false;
             this.groupBox1.Text = "Networking";
+            // 
+            // ProxyTextBox
+            // 
+            this.ProxyTextBox.AcceptsReturn = true;
+            this.ProxyTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.ProxyTextBox.BackColor = System.Drawing.Color.White;
+            this.ProxyTextBox.Location = new System.Drawing.Point(45, 74);
+            this.ProxyTextBox.Margin = new System.Windows.Forms.Padding(0);
+            this.ProxyTextBox.Name = "ProxyTextBox";
+            this.ProxyTextBox.Size = new System.Drawing.Size(153, 20);
+            this.ProxyTextBox.TabIndex = 8;
+            this.ProxyTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 77);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(36, 13);
+            this.label1.TabIndex = 7;
+            this.label1.Text = "Proxy:";
             // 
             // UserAgentTextBox
             // 
             this.UserAgentTextBox.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.UserAgentTextBox.Location = new System.Drawing.Point(79, 17);
+            this.UserAgentTextBox.Location = new System.Drawing.Point(74, 18);
             this.UserAgentTextBox.Name = "UserAgentTextBox";
             this.UserAgentTextBox.ReadOnly = true;
-            this.UserAgentTextBox.Size = new System.Drawing.Size(120, 20);
+            this.UserAgentTextBox.Size = new System.Drawing.Size(124, 20);
             this.UserAgentTextBox.TabIndex = 3;
             this.UserAgentTextBox.Text = "[AUTO]";
             this.UserAgentTextBox.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
@@ -348,7 +374,7 @@ namespace SiteMon
             // 
             this.DelayUpDown.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.DelayUpDown.Location = new System.Drawing.Point(79, 44);
+            this.DelayUpDown.Location = new System.Drawing.Point(71, 49);
             this.DelayUpDown.Maximum = new decimal(new int[] {
             -727379968,
             232,
@@ -360,7 +386,7 @@ namespace SiteMon
             0,
             0});
             this.DelayUpDown.Name = "DelayUpDown";
-            this.DelayUpDown.Size = new System.Drawing.Size(120, 20);
+            this.DelayUpDown.Size = new System.Drawing.Size(127, 20);
             this.DelayUpDown.TabIndex = 6;
             this.DelayUpDown.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
             this.DelayUpDown.Value = new decimal(new int[] {
@@ -373,7 +399,7 @@ namespace SiteMon
             // 
             this.label3.AutoSize = true;
             this.label3.Font = new System.Drawing.Font("Microsoft Sans Serif", 7.854545F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label3.Location = new System.Drawing.Point(9, 46);
+            this.label3.Location = new System.Drawing.Point(6, 51);
             this.label3.Name = "label3";
             this.label3.Size = new System.Drawing.Size(59, 13);
             this.label3.TabIndex = 5;
@@ -399,7 +425,7 @@ namespace SiteMon
             this.WhitelistGroupBox.Controls.Add(this.RegexWhitelistGridView);
             this.WhitelistGroupBox.Location = new System.Drawing.Point(217, 47);
             this.WhitelistGroupBox.Name = "WhitelistGroupBox";
-            this.WhitelistGroupBox.Size = new System.Drawing.Size(168, 183);
+            this.WhitelistGroupBox.Size = new System.Drawing.Size(168, 215);
             this.WhitelistGroupBox.TabIndex = 2;
             this.WhitelistGroupBox.TabStop = false;
             this.WhitelistGroupBox.Text = "Whitelist";
@@ -418,7 +444,7 @@ namespace SiteMon
             this.RegexWhitelistGridView.Location = new System.Drawing.Point(6, 19);
             this.RegexWhitelistGridView.Name = "RegexWhitelistGridView";
             this.RegexWhitelistGridView.RowHeadersWidth = 47;
-            this.RegexWhitelistGridView.Size = new System.Drawing.Size(156, 158);
+            this.RegexWhitelistGridView.Size = new System.Drawing.Size(156, 190);
             this.RegexWhitelistGridView.TabIndex = 0;
             // 
             // RegexColumn
@@ -434,7 +460,7 @@ namespace SiteMon
             this.LoggingPage.Controls.Add(this.LogsTextBox);
             this.LoggingPage.Location = new System.Drawing.Point(4, 22);
             this.LoggingPage.Name = "LoggingPage";
-            this.LoggingPage.Size = new System.Drawing.Size(391, 230);
+            this.LoggingPage.Size = new System.Drawing.Size(391, 262);
             this.LoggingPage.TabIndex = 2;
             this.LoggingPage.Text = "Logs";
             this.LoggingPage.UseVisualStyleBackColor = true;
@@ -444,7 +470,7 @@ namespace SiteMon
             this.LogsTextBox.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.LogsTextBox.Location = new System.Drawing.Point(3, 3);
             this.LogsTextBox.Name = "LogsTextBox";
-            this.LogsTextBox.Size = new System.Drawing.Size(444, 221);
+            this.LogsTextBox.Size = new System.Drawing.Size(383, 256);
             this.LogsTextBox.TabIndex = 0;
             this.LogsTextBox.Text = "";
             this.LogsTextBox.TextChanged += new System.EventHandler(this.LogsTextBox_TextChanged);
@@ -452,7 +478,7 @@ namespace SiteMon
             // LaunchButton
             // 
             this.LaunchButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.LaunchButton.Location = new System.Drawing.Point(112, 2);
+            this.LaunchButton.Location = new System.Drawing.Point(98, 3);
             this.LaunchButton.Name = "LaunchButton";
             this.LaunchButton.Size = new System.Drawing.Size(60, 23);
             this.LaunchButton.TabIndex = 2;
@@ -463,9 +489,9 @@ namespace SiteMon
             // HideButton
             // 
             this.HideButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.HideButton.Location = new System.Drawing.Point(178, 2);
+            this.HideButton.Location = new System.Drawing.Point(164, 3);
             this.HideButton.Name = "HideButton";
-            this.HideButton.Size = new System.Drawing.Size(45, 23);
+            this.HideButton.Size = new System.Drawing.Size(60, 23);
             this.HideButton.TabIndex = 3;
             this.HideButton.Text = "Hide";
             this.HideButton.UseVisualStyleBackColor = true;
@@ -474,9 +500,9 @@ namespace SiteMon
             // StopButton
             // 
             this.StopButton.Anchor = System.Windows.Forms.AnchorStyles.None;
-            this.StopButton.Location = new System.Drawing.Point(229, 2);
+            this.StopButton.Location = new System.Drawing.Point(230, 3);
             this.StopButton.Name = "StopButton";
-            this.StopButton.Size = new System.Drawing.Size(39, 23);
+            this.StopButton.Size = new System.Drawing.Size(59, 23);
             this.StopButton.TabIndex = 4;
             this.StopButton.Text = "Stop";
             this.StopButton.UseVisualStyleBackColor = true;
@@ -500,7 +526,7 @@ namespace SiteMon
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(404, 284);
+            this.ClientSize = new System.Drawing.Size(404, 320);
             this.Controls.Add(this.StopButton);
             this.Controls.Add(this.HideButton);
             this.Controls.Add(this.LaunchButton);
@@ -566,5 +592,7 @@ namespace SiteMon
         private System.Windows.Forms.DataGridViewTextBoxColumn RegexColumn;
         private System.Windows.Forms.Button GenEncKeyButton;
         private System.Windows.Forms.Button ToggleEncKeyVisibilityBtn;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox ProxyTextBox;
     }
 }

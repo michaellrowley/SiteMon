@@ -24,7 +24,7 @@ namespace SiteMon {
                     //this.WebInteraction.Headers.Set("User-Agent", "v0.1, https://github.com/michaellrowley/sitemon");
                     RawSourceLines = this.WebInteraction.DownloadString(this.Url).Split('\n');
                 }
-                catch (Exception exc) {
+                catch (Exception) {
                     return null;
                 }
                 string AdjustedSource = string.Empty;
@@ -88,7 +88,10 @@ namespace SiteMon {
                             // checksum/hashing algorithm for
                             // C# .NET, not for anything security
                             // related.
-                            // If the tech-debt becomes too large (performance gets too slow) I'll write (or more realistically, copy) a CRC32 or basic checksum implementation and use that.
+                            // If the tech-debt becomes too large
+                            // I'll write (probably copy)
+                            // a computationally-cheaper checksum
+                            // implementation and use that.
                             SHA1 SHAInstance = SHA1.Create();
                             byte[] LastBytes = System.Text.Encoding.UTF8.GetBytes(this.LastPageSource);
                             string LastPageHash = BitConverter.ToString(SHAInstance.ComputeHash(LastBytes)).Replace("-", string.Empty);
@@ -96,7 +99,7 @@ namespace SiteMon {
                             string NewPageHash = BitConverter.ToString(SHAInstance.ComputeHash(NewBytes)).Replace("-", string.Empty);
                             //if (System.IO.File.Exists()) // Don't bother with this check, just overwrite the file if it already exists.
                             SHAInstance.Dispose(); // Easier than a 'using' tag in this case.
-                            SHAInstance = null; // Prevent future accidental use.
+                            SHAInstance = null; // Prevent accidental future use.
                             string CurrentDateTimeFormatted = DateTime.Now.ToString().Replace(" ",
                                 "_").Replace(':', '-').Replace('/', '-');
                             System.IO.File.WriteAllText(Configuration.ChangeLogsLocation +
@@ -139,12 +142,14 @@ namespace SiteMon {
                 this.LastPageSource = null;
                 this.MonitoringThread = new Thread(this.Monitor);
                 Configuration.StartedAt = DateTime.Now;
+                if (Configuration.Proxy.Length >= 1) {
+                    this.WebInteraction.Proxy = new WebProxy(Configuration.Proxy);
+                }
                 this.LastPageSource = this.GetPageSource();
             }
         };
         private List<MonitorTarget> MonitorTargets = new List<MonitorTarget>(0);
-        public MonitorInstance() {
-        }
+        public MonitorInstance() { }
         public void StopMonitoringAll() {
             for (int i = 0; i < MonitorTargets.Count; i++) {
                 this.MonitorTargets[i].Stop();

@@ -26,6 +26,7 @@ namespace SiteMon
             Configuration.PlaySound = this.PlaySoundCheckBox.Checked;
             Configuration.ChangeLogs = this.ChangeLoggingCheckBox.Checked;
             Configuration.ChangeLogsLocation = this.ChangeLogLocationDialog.SelectedPath;
+            Configuration.Proxy = this.ProxyTextBox.Text;
             Configuration.Logs = this.LogsTextBox.Text;
             Configuration.Targets.Clear();
             for (int i = 0; i < MonitorListGridView.Rows.Count; i++) {
@@ -56,6 +57,7 @@ namespace SiteMon
             this.PlaySoundCheckBox.Checked = Configuration.PlaySound;
             this.ChangeLoggingCheckBox.Checked = Configuration.ChangeLogs;
             this.ChangeLogLocationDialog.SelectedPath = Configuration.ChangeLogsLocation;
+            this.ProxyTextBox.Text = Configuration.Proxy;
             this.LogsTextBox.Text = Configuration.Logs;
         }
         private void MonitorListTab_Click(object sender, EventArgs e) {
@@ -239,7 +241,7 @@ namespace SiteMon
     }
 }
 public static class Configuration {
-    public static readonly string Version = "v0.8.4";
+    public static readonly string Version = "v0.8.5";
     public static string[] Regexes = new string[0];
     public static List<KeyValuePair<string, string>> Targets = new List<KeyValuePair<string, string>>(0); // { <NAME, URL> }
     public static string UserAgent;
@@ -252,12 +254,13 @@ public static class Configuration {
     public static bool ChangeLogs;
     public static string ChangeLogsLocation;
     public static string Logs;
+    public static string Proxy;
     private static string GenerateHeader() {
         string Header = string.Empty;
         Header += "// Project: HTTPS://GITHUB.COM/MICHAELLROWLEY/SITEMON\n";
         Header += $"// Version: {Configuration.Version}\n";
         Header += $"// Created: {DateTime.Now.ToString()}\n";
-        Header += "// All lines beginning with two slashes ('//') are optional.\n";
+        Header += "// Lines beginning with two slashes ('//') are comments, they can be omitted.\n";
         return Header;
     }
     public static string Serialize() {
@@ -298,6 +301,10 @@ public static class Configuration {
         SerializedData += "// Configuration.ChangeLogsLocation:\n";
         SerializedData += Configuration.ChangeLogsLocation + "\n";
 
+        // this.Proxy
+        SerializedData += "// Configuration.Proxy:\n";
+        SerializedData += Configuration.Proxy + "\n";
+
         // this.Regexes
         SerializedData += "// Configuration.Regexes:";
         foreach (string RegexInstance in Configuration.Regexes) {
@@ -312,7 +319,8 @@ public static class Configuration {
 
         // this.Logs
         SerializedData += "\n\n// Configuration.Logs:";
-        foreach (string LogLine in Configuration.Logs.Split('\n')) {
+        foreach (string LogLine in Configuration.Logs.Split('\n'))
+        {
             SerializedData += "\n\t" + LogLine;
         }
 
@@ -378,18 +386,23 @@ public static class Configuration {
                     }
                     break;
                 case 8:
-                        // this.ChangeLogsLocation
-                        Configuration.ChangeLogsLocation = DataLine;
-                        ParsingStage++;
+                    // this.ChangeLogsLocation
+                    Configuration.ChangeLogsLocation = DataLine;
+                    ParsingStage++;
                     break;
                 case 9:
+                    // this.ChangeLogsLocation
+                    Configuration.Proxy = DataLine;
+                    ParsingStage++;
+                    break;
+                case 10:
                         // this.Regexes
                         if (!DataLine.StartsWith("\t")) {
                             return false;
                         }
                         RegexList.Add(DataLine.TrimStart(new char[] { '\t' }));
                     break;
-                case 10: {
+                case 11: {
                         // this.Targets
                         string[] DataSegments = DataLine.TrimStart(new char[] { '\t' }).Split('\x00');
                         if (DataSegments.Length != 2) {
@@ -401,7 +414,7 @@ public static class Configuration {
                         ));
                     }
                     break;
-                case 11:
+                case 12:
                         Configuration.Logs += "\n" + DataLine.TrimStart(new char[] { '\t' });
                     break;
                 default:
