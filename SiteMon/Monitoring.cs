@@ -7,22 +7,17 @@ using System.Security.Cryptography;
 using System.Windows.Forms;
 
 namespace SiteMon {
-    public class MonitorInstance {
-        public struct MonitorTarget {
-            private Thread MonitoringThread;
+    public class MonitorInstance
+    {
+        public class MonitorEndpoint {
             public string Name;
             public string Url;
-            private bool StopMonitoring;
-            private WebClient WebInteraction;
             private string LastPageSource;
-            private string GetPageSource() {
+            private bool FirstRun;
+            private string GetPageSource(WebClient WebInteraction) {
                 string[] RawSourceLines = null;
                 try {
-                    this.WebInteraction.Headers.Set("user-agent",
-                        (Configuration.UserAgent == "[AUTO]" || Configuration.UserAgent == string.Empty)
-                            ? GenUA() : Configuration.UserAgent);
-                    //this.WebInteraction.Headers.Set("User-Agent", "v0.1, https://github.com/michaellrowley/sitemon");
-                    RawSourceLines = this.WebInteraction.DownloadString(this.Url).Split('\n');
+                    RawSourceLines = WebInteraction.DownloadString(this.Url).Split('\n');
                 }
                 catch (Exception) {
                     return null;
@@ -31,8 +26,7 @@ namespace SiteMon {
                 for (int i = 0; i < RawSourceLines.Length; i++) {
                     bool ShouldAddLine = true;
                     for (int j = 0; j < Configuration.Regexes.Length; j++) {
-                        if (Configuration.Regexes[i] != null &&
-                            Regex.IsMatch(RawSourceLines[i], Configuration.Regexes[j])) {
+                        if (Configuration.Regexes[j] != null && Regex.IsMatch(RawSourceLines[i], Configuration.Regexes[j])) {
                             ShouldAddLine = false; // Ignore this line
                             break;
                         }
@@ -71,111 +65,80 @@ namespace SiteMon {
                     System.Diagnostics.Process.Start(this.Url);
                 }
             }
-            private void Monitor() {
-                while (!StopMonitoring) {
-                    string PageSource = GetPageSource();
-                    if (this.LastPageSource != null && 
-                        PageSource != null &&
-                        this.LastPageSource != PageSource) {
+            public void RunMonitorCheck(WebClient WebInteraction) {
+                string PageSource = GetPageSource(WebInteraction);
+                if (!this.FirstRun && this.LastPageSource != null && PageSource != null && this.LastPageSource != PageSource) {
+                    Configuration.Logs += $"{DateTime.Now.TimeOfDay.ToString()}: A change was detected in '{this.Name}' ('{this.Url}').\n";
+                    SpawnNotification();
+                    if (Configuration.ChangeLogs) {
+                        // SHA1 isn't being used for cryptographic security.
+                        SHA1 SHAInstance = SHA1.Create();
+                        byte[] LastBytes = System.Text.Encoding.UTF8.GetBytes(this.LastPageSource);
+                        string LastPageHash = BitConverter.ToString(SHAInstance.ComputeHash(LastBytes)).Replace("-", string.Empty);
+                        byte[] NewBytes = System.Text.Encoding.UTF8.GetBytes(PageSource);
+                        string NewPageHash = BitConverter.ToString(SHAInstance.ComputeHash(NewBytes)).Replace("-", string.Empty);
 
-                        Configuration.Logs += $"{DateTime.Now.ToString()}: A change was detected in '{this.Name}' ('{this.Url}').\n";
-
-                        SpawnNotification();
-
-                        if (Configuration.ChangeLogs) {
-                            // SHA1 is used because I can't
-                            // find a native CRC (or similar)
-                            // checksum/hashing algorithm for
-                            // C# .NET, not for anything security
-                            // related.
-                            // If the tech-debt becomes too large
-                            // I'll write (probably copy)
-                            // a computationally-cheaper checksum
-                            // implementation and use that.
-                            SHA1 SHAInstance = SHA1.Create();
-                            byte[] LastBytes = System.Text.Encoding.UTF8.GetBytes(this.LastPageSource);
-                            string LastPageHash = BitConverter.ToString(SHAInstance.ComputeHash(LastBytes)).Replace("-", string.Empty);
-                            byte[] NewBytes = System.Text.Encoding.UTF8.GetBytes(PageSource);
-                            string NewPageHash = BitConverter.ToString(SHAInstance.ComputeHash(NewBytes)).Replace("-", string.Empty);
-                            //if (System.IO.File.Exists()) // Don't bother with this check, just overwrite the file if it already exists.
-                            SHAInstance.Dispose(); // Easier than a 'using' tag in this case.
-                            SHAInstance = null; // Prevent accidental future use.
-                            string CurrentDateTimeFormatted = DateTime.Now.ToString().Replace(" ",
-                                "_").Replace(':', '-').Replace('/', '-');
-                            System.IO.File.WriteAllText(Configuration.ChangeLogsLocation +
-                                $"\\{LastPageHash}-{CurrentDateTimeFormatted}",
-                                this.LastPageSource);
-
-                            System.IO.File.WriteAllText(Configuration.ChangeLogsLocation +
-                                $"/{NewPageHash}-{CurrentDateTimeFormatted}",
-                                PageSource);
-                        }
-
+                        //if (System.IO.File.Exists()) // Don't bother with this check, just overwrite the file if it already exists.
+                        SHAInstance.Dispose(); // Easier than a 'using' tag in this case.
+                        SHAInstance = null; // Prevent accidental future use.
+                        string CurrentDateTimeFormatted = DateTime.Now.ToString().Replace(" ",
+                            "_").Replace(':', '-').Replace('/', '-');
+                        System.IO.File.WriteAllText(Configuration.ChangeLogsLocation +
+                            $"\\{LastPageHash}-{CurrentDateTimeFormatted}",
+                            this.LastPageSource);
+                        System.IO.File.WriteAllText(Configuration.ChangeLogsLocation +
+                            $"/{NewPageHash}-{CurrentDateTimeFormatted}",
+                            PageSource);
                     }
-                    this.LastPageSource = PageSource;
 
-                    Thread.Sleep(Configuration.Delay);
                 }
+                this.FirstRun = false;
+                this.LastPageSource = PageSource;
+                Thread.Sleep(Configuration.Delay);
             }
-            public void Start() {
-                this.StopMonitoring = false;
-                this.MonitoringThread.Start();
-            }
-            public void Stop() {
-                this.StopMonitoring = true;
-                // TODO: Switch from Thread::Abort()
-                // to a more 'elegant' way of killing
-                // threads (see: https://stackoverflow.com/questions/2251964/)
-                this.MonitoringThread.Abort();
-            }
-            private string GenUA() {
-                //    (https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent)
-                string UserAgent = $"sitemon-bot/{Configuration.Version} (+https://github.com/michaellrowley/sitemon)";
-                return UserAgent;
-            }
-            public MonitorTarget(string Name, string Url) {
-                this.Name = Name;
-                this.Url = Url;
-                this.MonitoringThread = null;
-                this.StopMonitoring = false;
-                this.WebInteraction = new WebClient();
+            public MonitorEndpoint(KeyValuePair<string, string> EndpointInfo) {
+                this.Name = EndpointInfo.Key;
+                this.Url = EndpointInfo.Value;
                 this.LastPageSource = null;
-                this.MonitoringThread = new Thread(this.Monitor);
-                Configuration.StartedAt = DateTime.Now;
-                if (Configuration.Proxy.Length >= 1) {
-                    this.WebInteraction.Proxy = new WebProxy(Configuration.Proxy);
-                }
-                this.LastPageSource = this.GetPageSource();
+                this.FirstRun = true;
             }
         };
-        private List<MonitorTarget> MonitorTargets = new List<MonitorTarget>(0);
-        public MonitorInstance() { }
-        public void StopMonitoringAll() {
-            for (int i = 0; i < MonitorTargets.Count; i++) {
-                this.MonitorTargets[i].Stop();
-                this.MonitorTargets.RemoveAt(i);
+        private List<MonitorEndpoint> MonitorEndpoints = new List<MonitorEndpoint>(0);
+        private void MonitoringLoop() {
+            this.UpdateEndpoints();
+            WebClient WebInteraction = new WebClient();
+            if (Configuration.Proxy.Length >= 1) {
+                WebInteraction.Proxy = new WebProxy(Configuration.Proxy);
             }
-            if (this.MonitorTargets.Count != 0) {
-                this.MonitorTargets.Clear();
-            }
-        }
-        public bool StopMonitoringTarget(string Name, string Url) {
-            // Either Name or Url can be null, not both (obviously).
-            if (Name == null && Url == null) {
-                return false;
-            }
-            for (int i = 0; i < this.MonitorTargets.Count; i++) {
-                if (Name == null ? (this.MonitorTargets[i].Url != Url) : (this.MonitorTargets[i].Name != Name)) {
-                    continue;
+            Configuration.StartedAt = DateTime.Now;
+            while (true) {
+                foreach (MonitorEndpoint Endpoint in MonitorEndpoints) {
+                    // https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/User-Agent
+                    WebInteraction.Headers.Set("user-agent", (Configuration.UserAgent ==
+                        "[AUTO]" || Configuration.UserAgent == string.Empty) ?
+                        $"sitemon-bot/{Configuration.Version} (+https://github.com/michaellrowley/sitemon)" : Configuration.UserAgent);
+                    Endpoint.RunMonitorCheck(WebInteraction);
                 }
-                this.MonitorTargets[i].Stop();
-                return true;
+                Thread.Sleep(Configuration.Delay);
             }
-            return false;
         }
-        public void StartMonitoringTarget(string Name, string Url) {
-            MonitorTargets.Add(new MonitorTarget(Name, Url));
-            MonitorTargets[MonitorTargets.Count - 1].Start();
+        private Thread MonitorThread;
+        public MonitorInstance() {
+            this.MonitorThread = new Thread(MonitoringLoop);
+        }
+        private void UpdateEndpoints() {
+            MonitorEndpoints.Clear();
+            foreach (KeyValuePair<string, string> EndpointInstance in Configuration.Endpoints) {
+                MonitorEndpoints.Add(new MonitorEndpoint(EndpointInstance));
+            }
+        }
+        public void StopMonitoring() {
+            // TODO: Use a mutex to find a safer way of ending
+            // the thread.
+            this.MonitorThread.Abort();
+        }
+        public void StartMonitoring() {
+            this.MonitorThread.Start();
         }
     };
 }

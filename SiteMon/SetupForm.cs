@@ -28,28 +28,27 @@ namespace SiteMon
             Configuration.ChangeLogsLocation = this.ChangeLogLocationDialog.SelectedPath;
             Configuration.Proxy = this.ProxyTextBox.Text;
             Configuration.Logs = this.LogsTextBox.Text;
-            Configuration.Targets.Clear();
+            Configuration.Endpoints.Clear();
             for (int i = 0; i < MonitorListGridView.Rows.Count; i++) {
                 if (MonitorListGridView.Rows[i].Cells.Count != 2 ||
                     MonitorListGridView.Rows[i].Cells[0].Value == null ||
                     MonitorListGridView.Rows[i].Cells[1].Value == null) {
                     continue;
                 }
-                string TargetName = MonitorListGridView.Rows[i].Cells[0].Value.ToString();
-                string TargetURL = MonitorListGridView.Rows[i].Cells[1].Value.ToString();
-                Configuration.Targets.Add(new KeyValuePair<string, string>(TargetName, TargetURL));
+                string EndpointName = MonitorListGridView.Rows[i].Cells[0].Value.ToString();
+                string EndpointURL = MonitorListGridView.Rows[i].Cells[1].Value.ToString();
+                Configuration.Endpoints.Add(new KeyValuePair<string, string>(EndpointName, EndpointURL));
             }
         }
         private void UpdateForm() {
             this.UserAgentTextBox.Text = Configuration.UserAgent;
-            this.DelayUpDown.Value = (this.DelayUpDown.Value > Configuration.Delay)
-                ? this.DelayUpDown.Value : Configuration.Delay;
+            this.DelayUpDown.Value = Math.Max(Configuration.Delay, this.DelayUpDown.Minimum);
                 RegexWhitelistGridView.Rows.Clear();
             foreach (string RegexInstance in Configuration.Regexes) {
                 RegexWhitelistGridView.Rows.Add(new string[] { RegexInstance });
             }
-            foreach (KeyValuePair<string, string> TargetInstance in Configuration.Targets) {
-                MonitorListGridView.Rows.Add(TargetInstance.Key, TargetInstance.Value);
+            foreach (KeyValuePair<string, string> EndpointInstance in Configuration.Endpoints) {
+                MonitorListGridView.Rows.Add(EndpointInstance.Key, EndpointInstance.Value);
             }
             this.PopupWindowCheckBox.Checked = Configuration.ShowPopup;
             this.MessageBoxCheckBox.Checked = Configuration.ShowMessageBox;
@@ -70,6 +69,7 @@ namespace SiteMon
             new ToolTip().SetToolTip(this.ChangeLoggingCheckBox, "Toggles the logging of page changes.");
         }
         private T[] GridViewToArray<T>(DataGridView Source, int Index = 0, bool IgnoreLast = true) {
+            // TODO: Use a stack-based array, we can calculate its size.
             List<T> Array = new List<T>(0);
             for (int i = 0; i < Source.Rows.Count - (IgnoreLast ? 1 : 0); i++) {
                 Array.Add((T)Source.Rows[i].Cells[Index].Value);
@@ -83,24 +83,26 @@ namespace SiteMon
             }
             UpdateConfig();
             Monitoring = new MonitorInstance();
-            Configuration.Targets.Clear();
+            // TODO: Use a diffing algorithm to avoid having to re-write
+            // every element in the endpoint grid/array.
+            Configuration.Endpoints.Clear();
             for (int i = 0; i < MonitorListGridView.Rows.Count; i++) {
                 if (MonitorListGridView.Rows[i].Cells.Count != 2 ||
                     MonitorListGridView.Rows[i].Cells[0].Value == null ||
                     MonitorListGridView.Rows[i].Cells[1].Value == null) {
                     continue;
                 }
-                string TargetName = MonitorListGridView.Rows[i].Cells[0].Value.ToString();
-                string TargetURL = MonitorListGridView.Rows[i].Cells[1].Value.ToString();
-                Configuration.Targets.Add(new KeyValuePair<string, string>(TargetName, TargetURL));
-                Monitoring.StartMonitoringTarget(TargetName, TargetURL);
+                string EndpointName = MonitorListGridView.Rows[i].Cells[0].Value.ToString();
+                string EndpointURL = MonitorListGridView.Rows[i].Cells[1].Value.ToString();
+                Configuration.Endpoints.Add(new KeyValuePair<string, string>(EndpointName, EndpointURL));
             }
+            Monitoring.StartMonitoring();
         }
         private void StopButton_Click(object sender, EventArgs e) {
             if (Monitoring == null) {
                 return;
             }
-            Monitoring.StopMonitoringAll();
+            Monitoring.StopMonitoring();
             // TODO: Find out (and if required, do)
             // if I need to manually dispose each object
             // within the MonitoringInstance instance.
@@ -241,9 +243,9 @@ namespace SiteMon
     }
 }
 public static class Configuration {
-    public static readonly string Version = "v0.8.5";
+    public static readonly string Version = "v0.9.0";
     public static string[] Regexes = new string[0];
-    public static List<KeyValuePair<string, string>> Targets = new List<KeyValuePair<string, string>>(0); // { <NAME, URL> }
+    public static List<KeyValuePair<string, string>> Endpoints = new List<KeyValuePair<string, string>>(0); // { <NAME, URL> }
     public static string UserAgent;
     public static DateTime StartedAt;
     public static int Delay;
@@ -260,13 +262,11 @@ public static class Configuration {
         Header += "// Project: HTTPS://GITHUB.COM/MICHAELLROWLEY/SITEMON\n";
         Header += $"// Version: {Configuration.Version}\n";
         Header += $"// Created: {DateTime.Now.ToString()}\n";
-        Header += "// Lines beginning with two slashes ('//') are comments, they can be omitted.\n";
         return Header;
     }
     public static string Serialize() {
         // TODO: Consider using JSON Serialization/Deserialization
-        // to make things simpler/easier for porting data?
-
+        // to make things simpler/easier for extension?
         string SerializedData = GenerateHeader();
 
         // this.Delay
@@ -311,10 +311,10 @@ public static class Configuration {
             SerializedData += "\n\t" + RegexInstance;
         }
 
-        // this.Targets
-        SerializedData += "\n\n// Configuration.Targets:";
-        foreach (KeyValuePair<string, string> IterativeTarget in Configuration.Targets) {
-            SerializedData += "\n\t" + IterativeTarget.Key + "\x00" + IterativeTarget.Value;
+        // this.Endpoints
+        SerializedData += "\n\n// Configuration.Endpoints:";
+        foreach (KeyValuePair<string, string> IterativeEndpoint in Configuration.Endpoints) {
+            SerializedData += "\n\t" + IterativeEndpoint.Key + "\x00" + IterativeEndpoint.Value;
         }
 
         // this.Logs
@@ -403,12 +403,12 @@ public static class Configuration {
                         RegexList.Add(DataLine.TrimStart(new char[] { '\t' }));
                     break;
                 case 11: {
-                        // this.Targets
+                        // this.Endpoints
                         string[] DataSegments = DataLine.TrimStart(new char[] { '\t' }).Split('\x00');
                         if (DataSegments.Length != 2) {
                             return false;
                         }
-                        Configuration.Targets.Add(new KeyValuePair<string, string>(
+                        Configuration.Endpoints.Add(new KeyValuePair<string, string>(
                             DataSegments[0],
                             DataSegments[1]
                         ));

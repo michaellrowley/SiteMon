@@ -16,9 +16,7 @@ namespace SiteMon {
                     return;
                 }
                 MonitorInstance Monitoring = new MonitorInstance();
-                foreach (KeyValuePair<string, string> Target in Configuration.Targets) {
-                    Monitoring.StartMonitoringTarget(Target.Key, Target.Value);
-                }
+                Monitoring.StartMonitoring();
                 MessageBox.Show("Started monitoring.");
                 return;
             }
